@@ -1,0 +1,26 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Oficios Locales</title>
+    <link href="../public/css/output.css" rel="stylesheet">
+  </head>
+  <body class="bg-gray-50">
+
+    <section class="container mx-auto mt-8">
+      <form action="/buscar" method="GET">
+        <input type="text" name="q" placeholder="Buscar oficio..." class="border p-2 rounded">
+        <button class="bg-blue-500 text-white px-4 py-2 rounded">Buscar</button>
+      </form>
+
+      <div class="mt-6">
+        <% proveedores.forEach(proveedor => { %>
+          <div class="p-4 shadow mb-3 bg-white">
+            <h2><%= proveedor.nombre %> - <%= proveedor.categoria %></h2>
+            <p><%= proveedor.descripcion %></p>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </body>
+</html>
