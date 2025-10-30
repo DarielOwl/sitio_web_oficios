@@ -40,8 +40,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sitio_ofici
 // ---------------------------------------------
 // Rutas
 // ---------------------------------------------
-const proveedoresRouter = require('./routes/proveedores');
-
+const proveedorRouter = require('./routes/proveedor');
 
 // ---------------------------------------------
 // Services
@@ -65,7 +64,7 @@ app.get('/', async (req, res) => {
 
 
 // Rutas de proveedores
-app.use('/proveedores', proveedoresRouter);
+app.use('/proveedor', proveedorRouter);
 
 // ---------------------------------------------
 // Servidor

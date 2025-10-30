@@ -1,12 +1,16 @@
 const proveedorService = require('../services/proveedorService');
 
-exports.listarProveedores = async (req, res) => {
-  const { categoria, q } = req.query;
-  const proveedores = await proveedorService.obtenerProveedores(categoria, q);
-  res.render('pages/listaProveedores', { proveedores });
+exports.dashboard = async (req, res) => {
+  const data = await proveedorService.resumenDashboard(req.user._id);
+  res.render('proveedor/dashboard', data);
 };
 
-exports.verPerfil = async (req, res) => {
-  const proveedor = await proveedorService.obtenerProveedorPorId(req.params.id);
-  res.render('pages/perfilProveedor', { proveedor });
+exports.formPerfil = async (req, res) => {
+  const perfil = await proveedorService.obtenerPerfil(req.user._id);
+  res.render('proveedor/perfilEditar', { perfil });
+};
+
+exports.guardarPerfil = async (req, res) => {
+  await proveedorService.guardarPerfil(req.user._id, req.body);
+  res.redirect('/proveedor/dashboard');
 };

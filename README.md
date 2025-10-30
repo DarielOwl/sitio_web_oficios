@@ -25,6 +25,7 @@
 
 7) Compilar los archivos para que tengan tailwin 
 - npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
+- npx tailwindcss -i ./public/css/tailwind.css -o ./public/css/output.css --watch
 
 8) Instalar las librerias de .env (dotenv)
 - npm install dotenv
@@ -40,21 +41,17 @@
 1) docker exec -it sitio-web-oficial-mongodb mongosh -u admin -p admin123
 2) use sitio_oficios
 1) db.proveedors.insertMany([
-  {
-    nombre: "Carlos Mendoza",
-    categoria: "Plomero",
-    descripcion: "15 años de experiencia en instalaciones de agua.",
-    precioMin: 800,
-    precioMax: 1500,
-    aceptaTrueque: true
-  },
-  {
-    nombre: "Ana Rodríguez",
-    categoria: "Electricista",
-    descripcion: "Especialista en luminarias y cableado residencial.",
-    precioMin: 600,
-    precioMax: 2000,
-    aceptaTrueque: true
-  }
+{
+  nombre: 'Carlos Mendoza',
+  zona: 'Centro - 3km',
+  descripcion: 'Plomero con 15 años de experiencia.',
+  contacto: { whatsapp: '5491122223333' }
+},
+{
+  nombre: 'Ana Rodríguez',
+  zona: 'Norte - 4km',
+  descripcion: 'Electricista residencial y comercial.',
+  contacto: { whatsapp: '5491144445555' }
+}
 ])
 
