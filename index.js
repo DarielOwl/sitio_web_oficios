@@ -30,12 +30,32 @@ app.set('views', path.join(__dirname, 'views'));
 // ---------------------------------------------
 // Conexión a MongoDB
 // ---------------------------------------------
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sitio_oficios', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ Conectado a MongoDB'))
-.catch(err => console.error('❌ Error al conectar con MongoDB:', err));
+const {
+  MONGO_URI,
+  MONGO_HOST = 'localhost',
+  MONGO_PORT = 27017,
+  MONGO_DB = 'sitio_oficios',
+  MONGO_USER,
+  MONGO_PASS,
+  MONGO_AUTH_SOURCE = 'admin',
+} = process.env;
+
+// si el usuario define MONGO_URI, usamos eso tal cual
+const mongoUrl =
+  MONGO_URI || `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
+
+const mongoOptions = {};
+
+// si hay user/pass, los pasamos (docker-compose los tiene)
+if (MONGO_USER && MONGO_PASS) {
+  mongoOptions.auth = { username: MONGO_USER, password: MONGO_PASS };
+  mongoOptions.authSource = MONGO_AUTH_SOURCE;
+}
+
+mongoose
+  .connect(mongoUrl, mongoOptions)
+  .then(() => console.log('✅ Conectado a MongoDB'))
+  .catch((err) => console.error('❌ Error al conectar con MongoDB:', err));
 
 // ---------------------------------------------
 // Rutas
