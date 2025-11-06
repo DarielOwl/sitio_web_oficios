@@ -36,6 +36,10 @@
 10) Instalar las librerias de plantillas EJS
 - npm install ejs
 
+10) Instalar las librerias de express-session
+- npm install express-session bcrypt
+
+
 
 # Inster datos DB
 1) docker exec -it sitio-web-oficial-mongodb mongosh -u admin -p admin123
