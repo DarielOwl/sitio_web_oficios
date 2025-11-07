@@ -20,7 +20,7 @@ exports.login = async (req, res) => {
     req.session.rol = usuario.rol;
 
     if (usuario.rol === 'proveedor') {
-      return res.redirect('/proveedor/dashboard');
+      return res.redirect('/');
     }
 
     // solicitante u otros roles → a la página pública
