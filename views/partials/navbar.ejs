@@ -1,6 +1,42 @@
-<nav class="bg-blue-600 text-white p-4">
-  <a href="/proveedor/dashboard" class="mr-4">Dashboard</a>
-  <a href="/proveedor/servicios" class="mr-4">Servicios</a>
-  <a href="/proveedor/acuerdos" class="mr-4">Acuerdos</a>
-  <a href="/proveedor/resenas">Reseñas</a>
+<nav class="bg-blue-600 text-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex items-center justify-between h-12">
+
+      <!-- Izquierda: navegación principal -->
+      <div class="flex items-center space-x-6 text-sm">
+        <a href="/" class="font-semibold">Oficios Locales</a>
+
+        <% if (currentUser && currentUser.rol === 'proveedor') { %>
+          <a href="/" class="hover:bg-blue-700 px-3 py-1 rounded">Dashboard</a>
+          <a href="/proveedor/servicios" class="hover:bg-blue-700 px-3 py-1 rounded">Servicios</a>
+          <a href="/proveedor/acuerdos" class="hover:bg-blue-700 px-3 py-1 rounded">Acuerdos</a>
+          <a href="/proveedor/resenas" class="hover:bg-blue-700 px-3 py-1 rounded">Reseñas</a>
+        <% } %>
+      </div>
+
+      <!-- Derecha: usuario / logout -->
+      <div class="flex items-center space-x-3 text-sm">
+        <% if (currentUser) { %>
+          <span class="text-blue-100">
+            Hola, <%= currentUser.nombre %>
+          </span>
+          <a
+            href="/auth/logout"
+            class="bg-blue-500 hover:bg-blue-700 px-3 py-1 rounded font-medium"
+          >
+            Cerrar sesión
+          </a>
+        <% } else { %>
+          <a href="/auth/login" class="hover:underline">Iniciar sesión</a>
+          <a
+            href="/auth/register"
+            class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-50"
+          >
+            Regístrate
+          </a>
+        <% } %>
+      </div>
+
+    </div>
+  </div>
 </nav>

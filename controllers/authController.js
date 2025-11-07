@@ -42,7 +42,11 @@ exports.registro = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/');
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error al cerrar sesión:', err);
+    }
+    res.redirect('/auth/login'); // vuelve al login
   });
 };
+

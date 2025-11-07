@@ -65,6 +65,11 @@ const proveedorService = require('./services/proveedorService');
 
 // Página pública principal
 app.get('/', async (req, res) => {
+  // si no hay usuario en sesión, mostrar login primero
+  if (!req.user) {
+    return res.redirect('/auth/login');
+  }
+
   try {
     const proveedores = await proveedorService.obtenerProveedores();
     res.render('index', { proveedores });
