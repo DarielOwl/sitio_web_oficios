@@ -1,17 +1,21 @@
+// models/Proveedor.js
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const ProveedorSchema = new mongoose.Schema({
-  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-  nombre: String,
-  descripcion: String,
-  experiencia: String,
-  contacto: {
+const proveedorSchema = new Schema(
+  {
+    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true, unique: true },
+    nombrePublico: String,          // opcional, puedes usar el nombre del usuario
+    descripcion: String,
+    experiencia: String,
+    zona: String,
+    telefono: String,
     whatsapp: String,
-    email: String
+    emailContacto: String,
+    disponibilidad: String,
+    aceptaTrueque: { type: Boolean, default: false }
   },
-  zona: String,
-  aceptaTrueque: Boolean,
-  ratingPromedio: { type: Number, default: 0 }
-});
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Proveedor', ProveedorSchema);
+module.exports = mongoose.model('Proveedor', proveedorSchema);

@@ -1,14 +1,19 @@
+// models/Servicio.js
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const ServicioSchema = new mongoose.Schema({
-    proveedor: { type: mongoose.Schema.Types.ObjectId, ref: 'Proveedor', required: true },
-    titulo: String,
+const servicioSchema = new Schema(
+  {
+    proveedor: { type: Schema.Types.ObjectId, ref: 'Proveedor', required: true },
+    titulo: { type: String, required: true },
     categoria: String,
-    precio: Number,
-    horasIntercambio: Number,
-    aceptaDinero: Boolean,
-    aceptaHoras: Boolean,
-    activo: { type: Boolean, default: true }
-});
+    descripcion: String,
+    precioMin: Number,
+    precioMax: Number,
+    aceptaTrueque: { type: Boolean, default: false },
+    horasIntercambio: Number
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Servicio', ServicioSchema);
+module.exports = mongoose.model('Servicio', servicioSchema);

@@ -1,38 +1,54 @@
+// services/proveedorService.js
 const Proveedor = require('../models/Proveedor');
-const Servicio = require('../models/Servicio');
-const Acuerdo = require('../models/Acuerdo');
-const Resena = require('../models/Resena');
 
-async function obtenerPerfil(userId) {
-  return await Proveedor.findOne({ usuario: userId });
+async function obtenerProveedores(terminoBusqueda = '') {
+  const filtro = {};
+
+  if (terminoBusqueda) {
+    const regex = new RegExp(terminoBusqueda, 'i');
+    filtro.$or = [
+      { nombre: regex },
+      { categoriaPrincipal: regex },
+      { zona: regex },
+    ];
+  }
+
+  // lista para la página principal / dashboard
+  return Proveedor.find(filtro).lean();
 }
 
-async function guardarPerfil(userId, data) {
-  let proveedor = await Proveedor.findOne({ usuario: userId });
-  if (!proveedor) proveedor = new Proveedor({ usuario: userId, ...data });
-  else Object.assign(proveedor, data);
-  return proveedor.save();
+// Perfil de un proveedor asociado a un usuario
+async function obtenerPerfilPorUsuario(usuarioId) {
+  return Proveedor.findOne({ usuario: usuarioId }).lean();
 }
 
-async function resumenDashboard(userId) {
-  const proveedor = await Proveedor.findOne({ usuario: userId });
-  if (!proveedor) return { proveedor: null, servicios: [], acuerdos: [], resenas: [] };
+// Crea o actualiza el perfil del proveedor del usuario
+async function guardarPerfil(usuarioId, datos) {
+  const proveedor = await Proveedor.findOneAndUpdate(
+    { usuario: usuarioId },
+    {
+      $set: {
+        descripcion: datos.descripcion,
+        experiencia: datos.experiencia,
+        zona: datos.zona,
+        telefono: datos.telefono,
+        whatsapp: datos.whatsapp,
+        emailContacto: datos.emailContacto,
+        disponibilidad: datos.disponibilidad,
+        aceptaTrueque: datos.aceptaTrueque,
+      },
+    },
+    {
+      new: true,
+      upsert: true, // si no existe, lo crea
+    }
+  ).lean();
 
-  const servicios = await Servicio.find({ proveedor: proveedor._id }).limit(5);
-  const acuerdos  = await Acuerdo.find({ proveedor: proveedor._id }).limit(5);
-  const resenas   = await Resena.find({ proveedor: proveedor._id }).limit(5);
-
-  return { proveedor, servicios, acuerdos, resenas };
-}
-
-/* 👉 NUEVO: listar proveedores para la portada */
-async function obtenerProveedores(filtro = {}, limite = 20) {
-  return await Proveedor.find(filtro).limit(limite);
+  return proveedor;
 }
 
 module.exports = {
-  obtenerPerfil,
+  obtenerProveedores,
+  obtenerPerfilPorUsuario,
   guardarPerfil,
-  resumenDashboard,
-  obtenerProveedores,   // <-- exportado
 };

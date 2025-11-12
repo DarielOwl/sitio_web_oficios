@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi perfil de proveedor</title>
+  <link rel="stylesheet" href="/css/output.css">
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+  <!-- NAVBAR azul -->
+  <nav class="bg-blue-600 text-white">
+    <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <a href="/" class="font-semibold text-sm">Oficios Locales</a>
+        <a href="/proveedor/dashboard" class="text-sm hover:underline">Dashboard</a>
+        <a href="/proveedor/servicios" class="text-sm hover:underline">Servicios</a>
+        <a href="/proveedor/acuerdos" class="text-sm hover:underline">Acuerdos</a>
+        <a href="/proveedor/resenas" class="text-sm hover:underline">Reseñas</a>
+        <span class="text-sm font-semibold border-b-2 border-white">Mi perfil</span>
+      </div>
+
+      <div class="flex items-center gap-3 text-sm">
+        <% if (user) { %>
+          <span>Hola, <%= user.nombre %></span>
+        <% } %>
+        <a href="/auth/logout"
+           class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-slate-100">
+          Cerrar sesión
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO -->
+  <main class="max-w-4xl mx-auto mt-10 mb-12 px-4">
+    <h1 class="text-2xl font-semibold mb-6">Mi perfil de proveedor</h1>
+
+    <% if (mensajeOk) { %>
+      <div class="mb-4 bg-green-100 text-green-700 text-sm px-4 py-3 rounded border border-green-200">
+        <%= mensajeOk %>
+      </div>
+    <% } %>
+
+    <% if (mensajeError) { %>
+      <div class="mb-4 bg-red-100 text-red-700 text-sm px-4 py-3 rounded border border-red-200">
+        <%= mensajeError %>
+      </div>
+    <% } %>
+
+    <form action="/proveedor/perfil"
+          method="POST"
+          class="bg-white shadow rounded-lg p-6 space-y-6">
+
+      <!-- Descripción -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Descripción</label>
+        <textarea
+          name="descripcion"
+          rows="3"
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ><%= proveedor && proveedor.descripcion ? proveedor.descripcion : '' %></textarea>
+      </div>
+
+      <!-- Experiencia + zona -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Años de experiencia</label>
+          <input
+            type="number"
+            min="0"
+            name="experiencia"
+            value="<%= proveedor && proveedor.experiencia ? proveedor.experiencia : '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Zona / barrio</label>
+          <input
+            type="text"
+            name="zona"
+            value="<%= proveedor && proveedor.zona ? proveedor.zona : '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+      </div>
+
+      <!-- Teléfono + WhatsApp -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Teléfono</label>
+          <input
+            type="text"
+            name="telefono"
+            value="<%= proveedor && proveedor.telefono ? proveedor.telefono : '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">WhatsApp</label>
+          <input
+            type="text"
+            name="whatsapp"
+            value="<%= proveedor && proveedor.whatsapp ? proveedor.whatsapp : '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Email de contacto</label>
+        <input
+          type="email"
+          name="emailContacto"
+          value="<%= proveedor && proveedor.emailContacto ? proveedor.emailContacto : (user && user.email ? user.email : '') %>"
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+      </div>
+
+      <!-- Disponibilidad -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Disponibilidad</label>
+        <input
+          type="text"
+          name="disponibilidad"
+          value="<%= proveedor && proveedor.disponibilidad ? proveedor.disponibilidad : '' %>"
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+      </div>
+
+      <!-- Acepta trueque -->
+      <div class="flex items-center gap-2">
+        <input
+          id="aceptaTrueque"
+          type="checkbox"
+          name="aceptaTrueque"
+          class="h-4 w-4 text-blue-600 border-slate-300 rounded"
+          <%= proveedor && proveedor.aceptaTrueque ? 'checked' : '' %>
+        >
+        <label for="aceptaTrueque" class="text-sm text-slate-700">
+          Acepto acuerdos de trueque / horas de intercambio
+        </label>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
+        <a
+          href="/proveedor/dashboard"
+          class="px-4 py-2 text-sm border border-slate-300 rounded-md hover:bg-slate-50"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Guardar cambios
+        </button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>
