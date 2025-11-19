@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Proveedor - <%= provider.name %></title>
+</head>
+<body>
+  <h1><%= provider.name %></h1>
+
+  <% if (provider.description) { %>
+    <p><strong>Descripción:</strong> <%= provider.description %></p>
+  <% } %>
+
+  <% if (provider.experienceYears) { %>
+    <p><strong>Experiencia:</strong> <%= provider.experienceYears %> años</p>
+  <% } %>
+
+  <% if (provider.zone) { %>
+    <p><strong>Zona:</strong> <%= provider.zone %></p>
+  <% } %>
+
+  <% if (provider.categories && provider.categories.length > 0) { %>
+    <p><strong>Categorías:</strong> <%= provider.categories.join(', ') %></p>
+  <% } %>
+
+  <p>
+    <% if (provider.whatsapp) { %>
+      <strong>WhatsApp:</strong>
+      <a href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>" target="_blank">
+        Contactar por WhatsApp
+      </a>
+      <br />
+    <% } %>
+
+    <% if (provider.email) { %>
+      <strong>Correo:</strong>
+      <a href="mailto:<%= provider.email %>">
+        Contactar por correo
+      </a>
+    <% } %>
+  </p>
+
+  <hr />
+
+  <section>
+    <h2>Servicios del proveedor</h2>
+    <p>(Sección reservada para cuando implementemos servicios asociados a este proveedor.)</p>
+  </section>
+
+  <section>
+    <h2>Reseñas</h2>
+    <p>(Sección reservada para reseñas una vez que implementemos acuerdos y calificaciones.)</p>
+  </section>
+
+  <p>
+    <a href="/proveedores">Volver al listado de proveedores</a>
+  </p>
+</body>
+</html>

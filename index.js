@@ -1,24 +1,27 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 
-// Para poder leer JSON del body
+const app = express();
+
+// Configurar motor de vistas (ejemplo con EJS)
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware para JSON
 app.use(express.json());
 
-// Importar rutas de proveedores
+// Rutas API
 const providerRoutes = require('./routes/provider.routes');
-
-// Usar las rutas bajo el prefijo /providers
 app.use('/providers', providerRoutes);
 
-// Si ya tienes otras rutas, van aquí...
+// Rutas de vistas
+const providerViewRoutes = require('./routes/provider.view.routes');
+app.use('/proveedores', providerViewRoutes);
 
-// Servir public si lo usas
+// Static
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Puerto y arranque del servidor
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

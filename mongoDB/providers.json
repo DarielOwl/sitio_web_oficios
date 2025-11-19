@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "name": "Pedro Carpintero",
+    "description": "Carpintería a medida, muebles y arreglos.",
+    "experienceYears": 7,
+    "whatsapp": "+54 9 11 6666-6666",
+    "email": "pedro.carpintero@example.com",
+    "zone": "Recoleta",
+    "categories": [
+      "carpintero"
+    ],
+    "createdAt": "2025-11-19T22:46:29.732Z",
+    "updatedAt": "2025-11-19T22:46:29.732Z"
+  }
+]
