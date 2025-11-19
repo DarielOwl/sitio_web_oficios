@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Proveedor - <%= provider.name %></title>
+  <title>Proveedor - <%= provider.name %>
+  </title>
 </head>
+
 <body>
-  <h1><%= provider.name %></h1>
+  <h1>
+    <%= provider.name %>
+  </h1>
 
   <% if (provider.description) { %>
-    <p><strong>Descripción:</strong> <%= provider.description %></p>
-  <% } %>
+    <p><strong>Descripción:</strong>
+      <%= provider.description %>
+    </p>
+    <% } %>
 
-  <% if (provider.experienceYears) { %>
-    <p><strong>Experiencia:</strong> <%= provider.experienceYears %> años</p>
-  <% } %>
+      <% if (provider.experienceYears) { %>
+        <p><strong>Experiencia:</strong>
+          <%= provider.experienceYears %> años
+        </p>
+        <% } %>
 
-  <% if (provider.zone) { %>
-    <p><strong>Zona:</strong> <%= provider.zone %></p>
-  <% } %>
+          <% if (provider.zone) { %>
+            <p><strong>Zona:</strong>
+              <%= provider.zone %>
+            </p>
+            <% } %>
 
-  <% if (provider.categories && provider.categories.length > 0) { %>
-    <p><strong>Categorías:</strong> <%= provider.categories.join(', ') %></p>
+              <% if (provider.categories && provider.categories.length> 0) { %>
+                <p><strong>Categorías:</strong>
+                  <%= provider.categories.join(', ') %></p>
   <% } %>
 
   <p>
@@ -42,18 +54,51 @@
 
   <hr />
 
+   <hr />
+
   <section>
     <h2>Servicios del proveedor</h2>
-    <p>(Sección reservada para cuando implementemos servicios asociados a este proveedor.)</p>
-  </section>
 
-  <section>
-    <h2>Reseñas</h2>
-    <p>(Sección reservada para reseñas una vez que implementemos acuerdos y calificaciones.)</p>
-  </section>
+    <% if (services && services.length > 0) { %>
+      <ul>
+        <% services.forEach(function(service) { %>
+          <li>
+            <strong><%= service.title %></strong><br />
 
-  <p>
-    <a href="/proveedores">Volver al listado de proveedores</a>
-  </p>
+            <% if (service.description) { %>
+              <span><%= service.description %></span><br />
+            <% } %>
+
+            <% if (service.category) { %>
+              <span>Categoría: <%= service.category %></span><br />
+            <% } %>
+
+            <% if (service.priceAmount !== null) { %>
+              <span>Precio: <%= service.priceAmount %> <%= service.priceCurrency || '' %></span><br />
+            <% } %>
+
+            <% if (service.exchangeHours !== null) { %>
+              <span>Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || ' horas' %></span><br />
+                    <% } %>
+                      </li>
+                      <hr />
+                      <% }); %>
+                        </ul>
+                        <% } else { %>
+                          <p>Este proveedor aún no tiene servicios cargados.</p>
+                          <% } %>
+                            </section>
+
+
+                            <section>
+                              <h2>Reseñas</h2>
+                              <p>(Sección reservada para reseñas una vez que implementemos acuerdos y calificaciones.)
+                              </p>
+                            </section>
+
+                            <p>
+                              <a href="/proveedores">Volver al listado de proveedores</a>
+                            </p>
 </body>
+
 </html>
