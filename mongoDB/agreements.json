@@ -62,5 +62,21 @@
     "status": "pendiente",
     "createdAt": "2025-11-19T23:15:55.596Z",
     "updatedAt": "2025-11-19T23:15:55.596Z"
+  },
+  {
+    "id": "6",
+    "providerId": "1",
+    "serviceId": "6",
+    "clientName": "Henry",
+    "clientContact": "henry@gmail.com",
+    "type": "dinero",
+    "moneyAmount": 2500,
+    "moneyCurrency": "UYU",
+    "exchangeHours": null,
+    "description": "si",
+    "estimatedDate": "2025-11-19T20:46",
+    "status": "pendiente",
+    "createdAt": "2025-11-19T23:46:46.758Z",
+    "updatedAt": "2025-11-19T23:46:46.758Z"
   }
 ]

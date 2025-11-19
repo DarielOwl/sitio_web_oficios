@@ -5,6 +5,12 @@ const router = express.Router();
 
 const providerViewController = require('../controllers/provider.view.controller');
 
+// Vista: formulario para nuevo acuerdo
+router.get('/:id/acuerdos/nuevo', providerViewController.showNewAgreementForm);
+
+// Vista: procesar creación de acuerdo
+router.post('/:id/acuerdos', providerViewController.createAgreementFromView);
+
 // Vista: lista de proveedores (HTML)
 router.get('/', providerViewController.showProvidersList);
 

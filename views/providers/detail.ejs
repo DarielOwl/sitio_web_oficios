@@ -50,6 +50,13 @@
   <% } %>
 
   <p>
+    <a href="/proveedores/<%= provider.id %>/acuerdos/nuevo">
+      Registrar nuevo acuerdo
+    </a>
+  </p>
+
+
+  <p>
     <% if (provider.whatsapp) { %>
       <strong>WhatsApp:</strong>
       <a href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>" target="_blank">
@@ -103,6 +110,57 @@
                                 <% } %>
                                   </section>
 
+                                  <section>
+                                    <h2>Acuerdos registrados</h2>
+
+                                    <% if (agreements && agreements.length> 0) { %>
+                                      <ul>
+                                        <% agreements.forEach(function(agreement) { %>
+                                          <li>
+                                            <strong>Solicitante:</strong>
+                                            <%= agreement.clientName %><br />
+
+                                              <% if (agreement.type) { %>
+                                                <strong>Tipo:</strong>
+                                                <%= agreement.type %><br />
+                                                  <% } %>
+
+                                                    <% if (agreement.moneyAmount !==null) { %>
+                                                      <strong>Dinero:</strong>
+                                                      <%= agreement.moneyAmount %>
+                                                        <%= agreement.moneyCurrency || '' %><br />
+                                                          <% } %>
+
+                                                            <% if (agreement.exchangeHours !==null) { %>
+                                                              <strong>Horas:</strong>
+                                                              <%= agreement.exchangeHours %><br />
+                                                                <% } %>
+
+                                                                  <% if (agreement.description) { %>
+                                                                    <strong>Descripción:</strong>
+                                                                    <%= agreement.description %><br />
+                                                                      <% } %>
+
+                                                                        <% if (agreement.status) { %>
+                                                                          <strong>Estado:</strong>
+                                                                          <%= agreement.status %><br />
+                                                                            <% } %>
+
+                                                                              <% if (agreement.estimatedDate) { %>
+                                                                                <small>Fecha estimada: <%= new
+                                                                                    Date(agreement.estimatedDate).toLocaleString('es-AR')
+                                                                                    %></small><br />
+                                                                                <% } %>
+                                          </li>
+                                          <hr />
+                                          <% }); %>
+                                      </ul>
+                                      <% } else { %>
+                                        <p>No hay acuerdos registrados para este proveedor.</p>
+                                        <% } %>
+                                  </section>
+
+
 
                                   <section>
                                     <h2>Reseñas</h2>
@@ -127,7 +185,7 @@
                                                           <% if (review.createdAt) { %>
                                                             <small>Fecha: <%= new
                                                                 Date(review.createdAt).toLocaleString('es-AR') %>
-                                                                </small>
+                                                            </small>
                                                             <% } %>
                                           </li>
                                           <hr />
