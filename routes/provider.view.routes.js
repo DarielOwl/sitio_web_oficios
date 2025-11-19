@@ -5,11 +5,23 @@ const router = express.Router();
 
 const providerViewController = require('../controllers/provider.view.controller');
 
-// Vista: formulario para nuevo acuerdo
+// Formularios y acciones de acuerdos
 router.get('/:id/acuerdos/nuevo', providerViewController.showNewAgreementForm);
-
-// Vista: procesar creación de acuerdo
 router.post('/:id/acuerdos', providerViewController.createAgreementFromView);
+router.post(
+  '/:id/acuerdos/:agreementId/cumplir',
+  providerViewController.markAgreementAsCompleted
+);
+
+// Formularios y acciones de reseñas ligadas a acuerdos
+router.get(
+  '/:id/acuerdos/:agreementId/resenas/nueva',
+  providerViewController.showNewReviewForm
+);
+router.post(
+  '/:id/acuerdos/:agreementId/resenas',
+  providerViewController.createReviewFromView
+);
 
 // Vista: lista de proveedores (HTML)
 router.get('/', providerViewController.showProvidersList);

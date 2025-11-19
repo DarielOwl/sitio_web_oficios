@@ -27,12 +27,17 @@ async function showProviderDetail(req, res) {
     const ratingSummary = await reviewService.getProviderRatingSummary(id);
     const agreements = await agreementService.getAllAgreements({ providerId: id });
 
+    const agreementsWithFlags = agreements.map((agreement) => ({
+      ...agreement,
+      hasReview: reviews.some((r) => r.agreementId === agreement.id)
+    }));
+
     return res.render('providers/detail', {
       provider,
       services,
       reviews,
       ratingSummary,
-      agreements
+      agreements: agreementsWithFlags
     });
   } catch (error) {
     console.error('Error rendering provider detail:', error);
@@ -82,7 +87,7 @@ async function createAgreementFromView(req, res) {
       exchangeHours,
       description,
       estimatedDate
-    } = req.body;
+    } = req.body || {};
 
     const data = {
       providerId: id,
@@ -99,12 +104,10 @@ async function createAgreementFromView(req, res) {
 
     await agreementService.createAgreement(data);
 
-    // Si todo sale bien, volvemos al perfil del proveedor
     return res.redirect(`/proveedores/${id}`);
   } catch (error) {
     console.error('Error creating agreement from view:', error);
 
-    // Si hay error, volvemos a mostrar el formulario con mensaje
     try {
       const { id } = req.params;
       const provider = await providerService.getProviderById(id);
@@ -122,9 +125,91 @@ async function createAgreementFromView(req, res) {
   }
 }
 
+// POST /proveedores/:id/acuerdos/:agreementId/cumplir → marcar acuerdo como cumplido
+async function markAgreementAsCompleted(req, res) {
+  try {
+    const { id: providerId, agreementId } = req.params;
+
+    await agreementService.updateAgreementStatus(agreementId, 'cumplido');
+
+    return res.redirect(`/proveedores/${providerId}`);
+  } catch (error) {
+    console.error('Error marking agreement as completed:', error);
+    return res.status(error.statusCode || 500).send(error.message || 'Error interno');
+  }
+}
+
+// GET /proveedores/:id/acuerdos/:agreementId/resenas/nueva → formulario de reseña
+async function showNewReviewForm(req, res) {
+  try {
+    const { id: providerId, agreementId } = req.params;
+
+    const provider = await providerService.getProviderById(providerId);
+    const agreement = await agreementService.getAgreementById(agreementId);
+
+    if (agreement.providerId !== providerId) {
+      return res.status(400).send('El acuerdo no pertenece a este proveedor');
+    }
+
+    return res.render('providers/newReview', {
+      provider,
+      agreement,
+      errorMessage: null
+    });
+  } catch (error) {
+    console.error('Error rendering new review form:', error);
+
+    if (error.statusCode === 404) {
+      return res.status(404).send('Proveedor o acuerdo no encontrado');
+    }
+
+    return res.status(500).send('Error interno al mostrar el formulario de reseña');
+  }
+}
+
+// POST /proveedores/:id/acuerdos/:agreementId/resenas → crear reseña desde vista
+async function createReviewFromView(req, res) {
+  try {
+    const { id: providerId, agreementId } = req.params;
+    const { rating, authorName, comment } = req.body || {};
+
+    const data = {
+      providerId,
+      agreementId,
+      rating: rating ? Number(rating) : NaN,
+      authorName,
+      comment
+    };
+
+    await reviewService.createReview(data);
+
+    return res.redirect(`/proveedores/${providerId}`);
+  } catch (error) {
+    console.error('Error creating review from view:', error);
+
+    try {
+      const { id: providerId, agreementId } = req.params;
+      const provider = await providerService.getProviderById(providerId);
+      const agreement = await agreementService.getAgreementById(agreementId);
+
+      return res.status(error.statusCode || 400).render('providers/newReview', {
+        provider,
+        agreement,
+        errorMessage: error.message || 'Error al crear la reseña'
+      });
+    } catch (innerError) {
+      console.error('Error rendering review form after error:', innerError);
+      return res.status(500).send('Error interno al procesar la reseña');
+    }
+  }
+}
+
 module.exports = {
   showProvidersList,
   showProviderDetail,
   showNewAgreementForm,
-  createAgreementFromView
+  createAgreementFromView,
+  markAgreementAsCompleted,
+  showNewReviewForm,
+  createReviewFromView
 };

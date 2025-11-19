@@ -8,5 +8,15 @@
     "comment": "Buen trabajo, aunque demoró un poco más de lo acordado.",
     "createdAt": "2025-02-03T12:00:00.000Z",
     "updatedAt": "2025-02-03T12:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "providerId": "1",
+    "agreementId": "6",
+    "rating": 1,
+    "authorName": "Henry",
+    "comment": "Una bosta",
+    "createdAt": "2025-11-19T23:55:47.202Z",
+    "updatedAt": "2025-11-19T23:55:47.202Z"
   }
 ]

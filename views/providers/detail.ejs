@@ -151,6 +151,28 @@
                                                                                     Date(agreement.estimatedDate).toLocaleString('es-AR')
                                                                                     %></small><br />
                                                                                 <% } %>
+
+                                                                                  <% if (agreement.status !=='cumplido'
+                                                                                    ) { %>
+                                                                                    <form
+                                                                                      action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/cumplir"
+                                                                                      method="POST"
+                                                                                      style="display: inline;">
+                                                                                      <button type="submit">Marcar como
+                                                                                        cumplido</button>
+                                                                                    </form>
+                                                                                    <% } else { %>
+                                                                                      <% if (!agreement.hasReview) { %>
+                                                                                        <a
+                                                                                          href="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas/nueva">
+                                                                                          Escribir reseña
+                                                                                        </a>
+                                                                                        <% } else { %>
+                                                                                          <span>Reseña
+                                                                                            registrada.</span>
+                                                                                          <% } %>
+                                                                                            <% } %>
+
                                           </li>
                                           <hr />
                                           <% }); %>
