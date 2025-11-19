@@ -12,27 +12,41 @@
     <%= provider.name %>
   </h1>
 
-  <% if (provider.description) { %>
-    <p><strong>Descripción:</strong>
-      <%= provider.description %>
+
+  <% if (ratingSummary && ratingSummary.totalReviews> 0) { %>
+    <p>
+      <strong>Reputación:</strong>
+      <%= ratingSummary.averageRating.toFixed(1) %> / 5
+        (basado en <%= ratingSummary.totalReviews %> reseñas)
     </p>
-    <% } %>
+    <% } else { %>
+      <p>
+        <strong>Reputación:</strong> Sin reseñas todavía.
+      </p>
+      <% } %>
 
-      <% if (provider.experienceYears) { %>
-        <p><strong>Experiencia:</strong>
-          <%= provider.experienceYears %> años
-        </p>
-        <% } %>
 
-          <% if (provider.zone) { %>
-            <p><strong>Zona:</strong>
-              <%= provider.zone %>
-            </p>
-            <% } %>
+        <% if (provider.description) { %>
+          <p><strong>Descripción:</strong>
+            <%= provider.description %>
+          </p>
+          <% } %>
 
-              <% if (provider.categories && provider.categories.length> 0) { %>
-                <p><strong>Categorías:</strong>
-                  <%= provider.categories.join(', ') %></p>
+            <% if (provider.experienceYears) { %>
+              <p><strong>Experiencia:</strong>
+                <%= provider.experienceYears %> años
+              </p>
+              <% } %>
+
+                <% if (provider.zone) { %>
+                  <p><strong>Zona:</strong>
+                    <%= provider.zone %>
+                  </p>
+                  <% } %>
+
+                    <% if (provider.categories && provider.categories.length> 0) { %>
+                      <p><strong>Categorías:</strong>
+                        <%= provider.categories.join(', ') %></p>
   <% } %>
 
   <p>
@@ -79,54 +93,55 @@
 
             <% if (service.exchangeHours !== null) { %>
               <span>Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || ' horas' %></span><br />
-                    <% } %>
-                      </li>
-                      <hr />
-                      <% }); %>
-                        </ul>
-                        <% } else { %>
-                          <p>Este proveedor aún no tiene servicios cargados.</p>
                           <% } %>
-                            </section>
+                            </li>
+                            <hr />
+                            <% }); %>
+                              </ul>
+                              <% } else { %>
+                                <p>Este proveedor aún no tiene servicios cargados.</p>
+                                <% } %>
+                                  </section>
 
 
-                            <section>
-                              <h2>Reseñas</h2>
+                                  <section>
+                                    <h2>Reseñas</h2>
 
-                              <% if (reviews && reviews.length> 0) { %>
-                                <ul>
-                                  <% reviews.forEach(function(review) { %>
-                                    <li>
-                                      <strong>Calificación:</strong>
-                                      <%= review.rating %> / 5<br />
+                                    <% if (reviews && reviews.length> 0) { %>
+                                      <ul>
+                                        <% reviews.forEach(function(review) { %>
+                                          <li>
+                                            <strong>Calificación:</strong>
+                                            <%= review.rating %> / 5<br />
 
-                                        <% if (review.authorName) { %>
-                                          <strong>Autor:</strong>
-                                          <%= review.authorName %><br />
-                                            <% } %>
-
-                                              <% if (review.comment) { %>
-                                                <strong>Comentario:</strong>
-                                                <%= review.comment %><br />
+                                              <% if (review.authorName) { %>
+                                                <strong>Autor:</strong>
+                                                <%= review.authorName %><br />
                                                   <% } %>
 
-                                                    <% if (review.createdAt) { %>
-                                                      <small>Fecha: <%= new
-                                                          Date(review.createdAt).toLocaleString('es-AR') %></small>
-                                                      <% } %>
-                                    </li>
-                                    <hr />
-                                    <% }); %>
-                                </ul>
-                                <% } else { %>
-                                  <p>Este proveedor aún no tiene reseñas.</p>
-                                  <% } %>
-                            </section>
+                                                    <% if (review.comment) { %>
+                                                      <strong>Comentario:</strong>
+                                                      <%= review.comment %><br />
+                                                        <% } %>
+
+                                                          <% if (review.createdAt) { %>
+                                                            <small>Fecha: <%= new
+                                                                Date(review.createdAt).toLocaleString('es-AR') %>
+                                                                </small>
+                                                            <% } %>
+                                          </li>
+                                          <hr />
+                                          <% }); %>
+                                      </ul>
+                                      <% } else { %>
+                                        <p>Este proveedor aún no tiene reseñas.</p>
+                                        <% } %>
+                                  </section>
 
 
-                            <p>
-                              <a href="/proveedores">Volver al listado de proveedores</a>
-                            </p>
+                                  <p>
+                                    <a href="/proveedores">Volver al listado de proveedores</a>
+                                  </p>
 </body>
 
 </html>

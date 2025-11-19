@@ -154,10 +154,33 @@ async function deleteReview(id) {
   return true;
 }
 
+async function getProviderRatingSummary(providerId) {
+  const reviews = await getAllReviews({ providerId });
+
+  if (!reviews || reviews.length === 0) {
+    return {
+      averageRating: null,
+      totalReviews: 0
+    };
+  }
+
+  const totalReviews = reviews.length;
+  const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+  const averageRating = sum / totalReviews;
+
+  return {
+    averageRating,
+    totalReviews
+  };
+}
+
+
 module.exports = {
   getAllReviews,
   getReviewById,
   createReview,
   updateReview,
-  deleteReview
+  deleteReview,
+  getProviderRatingSummary // <-- agregar
 };
+
