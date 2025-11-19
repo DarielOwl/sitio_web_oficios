@@ -1,0 +1,67 @@
+[
+  {
+    "id": "2",
+    "providerId": "2",
+    "title": "Reparación de pérdida de agua",
+    "description": "Detección y reparación de pérdidas menores en cañerías.",
+    "category": "plomero",
+    "priceAmount": 12000,
+    "priceCurrency": "ARS",
+    "exchangeHours": 2,
+    "exchangeUnit": "horas",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "providerId": "3",
+    "title": "Apertura de puerta de urgencia",
+    "description": "Servicio 24 hs para apertura de puertas trabadas.",
+    "category": "cerrajero",
+    "priceAmount": 18000,
+    "priceCurrency": "ARS",
+    "exchangeHours": null,
+    "exchangeUnit": null,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "providerId": "4",
+    "title": "Pintura de ambiente estándar",
+    "description": "Pintura de habitación hasta 12 m², incluye materiales básicos.",
+    "category": "pintor",
+    "priceAmount": null,
+    "priceCurrency": null,
+    "exchangeHours": 5,
+    "exchangeUnit": "horas",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "5",
+    "providerId": "5",
+    "title": "Revisión de instalación de gas",
+    "description": "Chequeo general de instalación y artefactos a gas.",
+    "category": "gasista",
+    "priceAmount": 20000,
+    "priceCurrency": "ARS",
+    "exchangeHours": 3,
+    "exchangeUnit": "horas",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "providerId": "1",
+    "title": "Cambio de disyuntor",
+    "description": "Reemplazo de disyuntor y pruebas básicas de seguridad.",
+    "category": "electricista",
+    "priceAmount": 25000,
+    "priceCurrency": "ARS",
+    "exchangeHours": null,
+    "exchangeUnit": null,
+    "createdAt": "2025-11-19T22:59:24.760Z",
+    "updatedAt": "2025-11-19T22:59:24.760Z"
+  }
+]
