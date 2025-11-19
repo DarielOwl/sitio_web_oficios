@@ -92,9 +92,37 @@
 
                             <section>
                               <h2>Reseñas</h2>
-                              <p>(Sección reservada para reseñas una vez que implementemos acuerdos y calificaciones.)
-                              </p>
+
+                              <% if (reviews && reviews.length> 0) { %>
+                                <ul>
+                                  <% reviews.forEach(function(review) { %>
+                                    <li>
+                                      <strong>Calificación:</strong>
+                                      <%= review.rating %> / 5<br />
+
+                                        <% if (review.authorName) { %>
+                                          <strong>Autor:</strong>
+                                          <%= review.authorName %><br />
+                                            <% } %>
+
+                                              <% if (review.comment) { %>
+                                                <strong>Comentario:</strong>
+                                                <%= review.comment %><br />
+                                                  <% } %>
+
+                                                    <% if (review.createdAt) { %>
+                                                      <small>Fecha: <%= new
+                                                          Date(review.createdAt).toLocaleString('es-AR') %></small>
+                                                      <% } %>
+                                    </li>
+                                    <hr />
+                                    <% }); %>
+                                </ul>
+                                <% } else { %>
+                                  <p>Este proveedor aún no tiene reseñas.</p>
+                                  <% } %>
                             </section>
+
 
                             <p>
                               <a href="/proveedores">Volver al listado de proveedores</a>

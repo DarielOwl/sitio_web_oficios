@@ -1,7 +1,8 @@
 // controllers/provider.view.controller.js
 
 const providerService = require('../services/provider.service');
-const serviceService = require('../services/service.service'); // <-- agregar
+const serviceService = require('../services/service.service');
+const reviewService = require('../services/review.service'); // <-- NUEVO
 
 // GET /proveedores → lista HTML de proveedores
 async function showProvidersList(req, res) {
@@ -21,10 +22,12 @@ async function showProviderDetail(req, res) {
     const provider = await providerService.getProviderById(id);
 
     const services = await serviceService.getAllServices({ providerId: id });
+    const reviews = await reviewService.getAllReviews({ providerId: id }); // <-- NUEVO
 
     return res.render('providers/detail', {
       provider,
-      services
+      services,
+      reviews // <-- NUEVO
     });
   } catch (error) {
     console.error('Error rendering provider detail:', error);
