@@ -13,10 +13,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 const providerRoutes = require('./routes/provider.routes');
 const serviceRoutes = require('./routes/service.routes');
 const agreementRoutes = require('./routes/agreement.routes');
+const reviewRoutes = require('./routes/review.routes');
 
 app.use('/providers', providerRoutes);
 app.use('/services', serviceRoutes);
 app.use('/agreements', agreementRoutes);
+app.use('/reviews', reviewRoutes);
 
 // Rutas vistas
 const providerViewRoutes = require('./routes/provider.view.routes');

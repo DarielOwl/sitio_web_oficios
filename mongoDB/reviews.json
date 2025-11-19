@@ -1,0 +1,12 @@
+[
+  {
+    "id": "2",
+    "providerId": "1",
+    "agreementId": "1",
+    "rating": 4,
+    "authorName": "Carlos Cliente",
+    "comment": "Buen trabajo, aunque demoró un poco más de lo acordado.",
+    "createdAt": "2025-02-03T12:00:00.000Z",
+    "updatedAt": "2025-02-03T12:00:00.000Z"
+  }
+]
