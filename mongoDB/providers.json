@@ -72,13 +72,15 @@
   {
     "id": "6",
     "name": "henry2",
-    "description": "",
-    "experienceYears": 0,
-    "whatsapp": "",
+    "description": "Vendo cartas",
+    "experienceYears": 1,
+    "whatsapp": "099999999",
     "email": "haff@gmail.com",
-    "zone": "",
-    "categories": [],
+    "zone": "Artigas",
+    "categories": [
+      "Cartas"
+    ],
     "createdAt": "2025-11-20T00:37:41.717Z",
-    "updatedAt": "2025-11-20T00:37:41.717Z"
+    "updatedAt": "2025-11-20T00:46:27.907Z"
   }
 ]

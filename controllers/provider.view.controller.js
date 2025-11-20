@@ -400,6 +400,97 @@ async function deleteServiceFromView(req, res) {
   }
 }
 
+// ---------- PERFIL DEL PROVEEDOR (EDITAR) ----------
+
+// GET /proveedores/:id/editar → formulario editar perfil
+async function showEditProviderForm(req, res) {
+  try {
+    const { id } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== id) {
+      return res.status(403).send('No tienes permiso para editar este proveedor');
+    }
+
+    const provider = await providerService.getProviderById(id);
+
+    return res.render('providers/editProvider', {
+      provider,
+      errorMessage: null
+    });
+  } catch (error) {
+    console.error('Error rendering edit provider form:', error);
+
+    if (error.statusCode === 404) {
+      return res.status(404).send('Proveedor no encontrado');
+    }
+
+    return res.status(500).send('Error interno al mostrar el formulario de edición');
+  }
+}
+
+// POST /proveedores/:id/editar → actualizar perfil desde vista
+async function updateProviderFromView(req, res) {
+  try {
+    const { id } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== id) {
+      return res.status(403).send('No tienes permiso para editar este proveedor');
+    }
+
+    const {
+      name,
+      description,
+      experienceYears,
+      zone,
+      categories,
+      whatsapp,
+      email
+    } = req.body || {};
+
+    const categoriesArray =
+      categories && categories.trim().length > 0
+        ? categories
+            .split(',')
+            .map((c) => c.trim())
+            .filter((c) => c.length > 0)
+        : [];
+
+    const data = {
+      name,
+      description,
+      experienceYears:
+        experienceYears === '' || experienceYears === undefined
+          ? null
+          : Number(experienceYears),
+      zone,
+      categories: categoriesArray,
+      whatsapp,
+      email
+    };
+
+    await providerService.updateProvider(id, data);
+
+    return res.redirect(`/proveedores/${id}`);
+  } catch (error) {
+    console.error('Error updating provider from view:', error);
+
+    try {
+      const { id } = req.params;
+      const provider = await providerService.getProviderById(id);
+
+      return res.status(error.statusCode || 400).render('providers/editProvider', {
+        provider,
+        errorMessage: error.message || 'Error al actualizar el proveedor'
+      });
+    } catch (innerError) {
+      console.error('Error rendering edit provider form after error:', innerError);
+      return res.status(500).send('Error interno al procesar la actualización');
+    }
+  }
+}
+
 module.exports = {
   showProvidersList,
   showProviderDetail,
@@ -412,5 +503,7 @@ module.exports = {
   createServiceFromView,
   showEditServiceForm,
   updateServiceFromView,
-  deleteServiceFromView
+  deleteServiceFromView,
+  showEditProviderForm,
+  updateProviderFromView
 };

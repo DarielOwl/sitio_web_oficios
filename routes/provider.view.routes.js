@@ -51,6 +51,18 @@ router.post(
   providerViewController.createReviewFromView
 );
 
+// ---------- PERFIL DEL PROVEEDOR (EDITAR) ----------
+router.get(
+  '/:id/editar',
+  requireAuth,
+  providerViewController.showEditProviderForm
+);
+router.post(
+  '/:id/editar',
+  requireAuth,
+  providerViewController.updateProviderFromView
+);
+
 // Vista: lista de proveedores (HTML)
 router.get('/', providerViewController.showProvidersList);
 
