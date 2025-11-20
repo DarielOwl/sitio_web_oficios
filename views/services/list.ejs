@@ -1,109 +1,126 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('../partials/header', { title: 'Servicios' }) %>
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Explorar servicios</title>
-</head>
+<h1 class="page-title">Servicios</h1>
+<p class="page-subtitle">
+  Buscá servicios por categoría y zona, y entrá al perfil del proveedor para acordar el trabajo.
+</p>
 
-<body>
-    <h1>Explorar servicios</h1>
+<div class="card form-card" style="max-width:100%;">
+  <form method="GET" action="/servicios">
+    <div class="form-group" style="display:flex;flex-wrap:wrap;gap:12px;">
+      <div style="flex:1;min-width:160px;">
+        <label for="category" class="form-label">Categoría</label>
+        <select id="category" name="category" class="form-select">
+          <option value="">Todas</option>
+          <% (categories || []).forEach(function (cat) { %>
+            <option value="<%= cat %>" <%= selectedCategory === cat ? 'selected' : '' %>>
+              <%= cat %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
 
-    <form method="GET" action="/servicios">
-        <p>
-            <label for="category">Categoría:</label><br />
-            <select id="category" name="category">
-                <option value="">Todas</option>
-                <% categories.forEach(function (cat) { %>
-                    <option value="<%= cat %>" <%=selectedCategory===cat ? 'selected' : '' %>>
-                        <%= cat %>
-                    </option>
-                    <% }); %>
-            </select>
-        </p>
+      <div style="flex:1;min-width:160px;">
+        <label for="zone" class="form-label">Zona</label>
+        <select id="zone" name="zone" class="form-select">
+          <option value="">Todas</option>
+          <% (zones || []).forEach(function (z) { %>
+            <option value="<%= z %>" <%= selectedZone === z ? 'selected' : '' %>>
+              <%= z %>
+            </option>
+          <% }); %>
+        </select>
+      </div>
+    </div>
 
-        <p>
-            <label for="zone">Zona:</label><br />
-            <select id="zone" name="zone">
-                <option value="">Todas</option>
-                <% zones.forEach(function (z) { %>
-                    <option value="<%= z %>" <%=selectedZone===z ? 'selected' : '' %>>
-                        <%= z %>
-                    </option>
-                    <% }); %>
-            </select>
-        </p>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+      <a href="/servicios" class="link-muted">Limpiar filtros</a>
+    </div>
+  </form>
+</div>
 
-        <button type="submit">Filtrar</button>
-    </form>
+<div class="card">
+  <% if (services && services.length > 0) { %>
+    <ul class="list-clean">
+      <% services.forEach(function (service) { %>
+        <li class="list-item">
+          <div class="text-sm">
+            <strong><%= service.title %></strong>
+          </div>
 
-    <hr />
+          <% if (service.description) { %>
+            <div class="text-sm" style="margin-top:4px;">
+              <%= service.description %>
+            </div>
+          <% } %>
 
-    <% if (services && services.length> 0) { %>
-        <ul>
-            <% services.forEach(function (service) { %>
-                <li>
-                    <strong>
-                        <%= service.title %>
-                    </strong><br />
-
-                    <% if (service.description) { %>
-                        <span>
-                            <%= service.description %>
-                        </span><br />
-                        <% } %>
-
-                            <% if (service.category) { %>
-                                <span>Categoría: <%= service.category %></span><br />
-                                <% } %>
-
-                                    <% if (service.priceAmount !==null) { %>
-                                        <span>Precio: <%= service.priceAmount %>
-                                                <%= service.priceCurrency || '' %></span><br />
-                                        <% } %>
-
-                                            <% if (service.exchangeHours !==null) { %>
-                                                <span>Intercambio: <%= service.exchangeHours %>
-                                                        <%= service.exchangeUnit || 'horas' %></span><br />
-                                                <% } %>
-
-                                                    <% if (service.provider) { %>
-                                                        <span>
-                                                            Proveedor:
-                                                            <a href="/proveedores/<%= service.provider.id %>">
-                                                                <%= service.provider.name %>
-                                                            </a>
-                                                        </span><br />
-
-                                                        <% if (service.provider.zone) { %>
-                                                            <span>Zona: <%= service.provider.zone %></span><br />
-                                                            <% } %>
-
-                                                                <% if (service.provider.whatsapp) { %>
-                                                                    <a href="https://wa.me/<%= service.provider.whatsapp.replace(/[^0-9]/g, '') %>"
-                                                                        target="_blank">
-                                                                        Contactar por WhatsApp
-                                                                    </a><br />
-                                                                    <% } %>
-
-                                                                        <% if (service.provider.email) { %>
-                                                                            <a
-                                                                                href="mailto:<%= service.provider.email %>">
-                                                                                Contactar por correo
-                                                                            </a><br />
-                                                                            <% } %>
-                                                                                <% } %>
-                </li>
-                <hr />
-                <% }); %>
-        </ul>
-        <% } else { %>
-            <p>No se encontraron servicios con los filtros seleccionados.</p>
+          <div class="meta-row" style="margin-top:6px;">
+            <% if (service.category) { %>
+              <span class="meta-item">Categoría: <%= service.category %></span>
             <% } %>
 
-                <p>
-                    <a href="/proveedores">Ver listado de proveedores</a>
-                </p>
-</body>
+            <% if (service.priceAmount !== null) { %>
+              <span class="meta-item">
+                Precio: <%= service.priceAmount %> <%= service.priceCurrency || '' %>
+              </span>
+            <% } %>
 
-</html>
+            <% if (service.exchangeHours !== null) { %>
+              <span class="meta-item">
+                Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || 'horas' %>
+              </span>
+            <% } %>
+          </div>
+
+          <% if (service.provider) { %>
+            <div class="meta-row" style="margin-top:6px;">
+              <span class="meta-item">
+                Proveedor:
+                <a href="/proveedores/<%= service.provider.id %>" class="link-muted">
+                  <%= service.provider.name %>
+                </a>
+              </span>
+
+              <% if (service.provider.zone) { %>
+                <span class="meta-item">Zona: <%= service.provider.zone %></span>
+              <% } %>
+            </div>
+
+            <div class="meta-row" style="margin-top:4px;">
+              <% if (service.provider.whatsapp) { %>
+                <a
+                  href="https://wa.me/<%= service.provider.whatsapp.replace(/[^0-9]/g, '') %>"
+                  target="_blank"
+                  class="link-muted"
+                >
+                  WhatsApp
+                </a>
+              <% } %>
+
+              <% if (service.provider.email) { %>
+                <a
+                  href="mailto:<%= service.provider.email %>"
+                  class="link-muted"
+                  style="margin-left:12px;"
+                >
+                  Correo
+                </a>
+              <% } %>
+            </div>
+          <% } %>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p class="text-sm">
+      No se encontraron servicios con los filtros seleccionados.
+    </p>
+  <% } %>
+</div>
+
+<p class="text-sm" style="margin-top:16px;">
+  <a href="/" class="link-muted">Volver al inicio</a>
+</p>
+
+<%- include('../partials/footer') %>

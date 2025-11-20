@@ -1,58 +1,53 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('partials/header', { title: 'Oficios locales' }) %>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Inicio - Sitio de oficios</title>
-</head>
+<section class="hero">
+  <h1 class="hero-title">Encontrá oficios locales de forma simple</h1>
+  <p class="hero-subtitle">
+    Explorá proveedores de confianza, acordá pagos en dinero o intercambio de horas
+    y dejá reseñas para ayudar a otros usuarios.
+  </p>
 
-<body>
-  <h1>Sitio de oficios locales</h1>
+  <div class="hero-actions">
+    <a href="/servicios" class="btn btn-primary">
+      Buscar servicios
+    </a>
+    <a href="/proveedores" class="btn btn-ghost">
+      Ver listado de proveedores
+    </a>
+  </div>
 
-  <% if (currentUser) { %>
-    <p>
-      Sesión iniciada como <strong>
-        <%= currentUser.email %>
-      </strong>
-      (<%= currentUser.role==='provider' ? 'Proveedor' : 'Cliente' %>)
-        <form action="/auth/logout" method="POST" style="display: inline;">
-          <button type="submit">Cerrar sesión</button>
-        </form>
+  <% if (!currentUser) { %>
+    <p class="hero-secondary">
+      ¿Querés publicar tus servicios?
+      <a href="/auth/register" class="link-muted">Registrate como proveedor</a>
+      o
+      <a href="/auth/register-client" class="link-muted">como cliente</a>.
     </p>
-    <% } else { %>
-      <p>
-        <a href="/auth/login">Iniciar sesión</a> |
-        <a href="/auth/register">Registrarse como proveedor</a> |
-        <a href="/auth/register-client">Registrarse como cliente</a>
-      </p>
+  <% } else { %>
+    <p class="hero-secondary">
+      Sesión iniciada como <strong><%= currentUser.email %></strong>
+      (<%= currentUser.role === 'provider' ? 'Proveedor' : 'Cliente' %>).
+      <% if (currentUser.role === 'provider' && currentUser.providerId) { %>
+        <a href="/proveedores/<%= currentUser.providerId %>" class="link-muted">
+          Ir a mi perfil
+        </a>
+      <% } else { %>
+        <a href="/servicios" class="link-muted">
+          Ver servicios disponibles
+        </a>
       <% } %>
+    </p>
+  <% } %>
+</section>
 
+<div class="card">
+  <h2 class="section-title">¿Cómo funciona?</h2>
+  <ol class="text-sm">
+    <li>Buscás un servicio por categoría o zona.</li>
+    <li>Entrás al perfil del proveedor y lo contactás por WhatsApp o correo.</li>
+    <li>Registrás un acuerdo (si sos cliente) para dejar un historial.</li>
+    <li>Cuando se cumple, dejás una reseña para construir reputación.</li>
+  </ol>
+</div>
 
-        <hr />
-
-        <section>
-          <h2>Explorar</h2>
-          <ul>
-            <li>
-              <a href="/servicios">Explorar servicios</a>
-            </li>
-            <li>
-              <a href="/proveedores">Ver listado de proveedores</a>
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>¿Cómo funciona?</h2>
-          <p>
-            1) Como visitante o solicitante, podés navegar por servicios y proveedores,
-            filtrar por categoría y zona, y contactar por WhatsApp o correo.
-          </p>
-          <p>
-            2) Como proveedor, podés registrarte, completar tu perfil, crear servicios,
-            registrar acuerdos con clientes y recibir reseñas.
-          </p>
-        </section>
-</body>
-
-</html>
+<%- include('partials/footer') %>
