@@ -4,20 +4,32 @@ const express = require('express');
 const router = express.Router();
 
 const providerViewController = require('../controllers/provider.view.controller');
+const { requireAuth } = require('../middlewares/auth.middleware');
 
 // ---------- SERVICIOS DESDE VISTA ----------
-router.get('/:id/servicios/nuevo', providerViewController.showNewServiceForm);
-router.post('/:id/servicios', providerViewController.createServiceFromView);
+router.get(
+  '/:id/servicios/nuevo',
+  requireAuth,
+  providerViewController.showNewServiceForm
+);
+router.post(
+  '/:id/servicios',
+  requireAuth,
+  providerViewController.createServiceFromView
+);
 router.get(
   '/:id/servicios/:serviceId/editar',
+  requireAuth,
   providerViewController.showEditServiceForm
 );
 router.post(
   '/:id/servicios/:serviceId/editar',
+  requireAuth,
   providerViewController.updateServiceFromView
 );
 router.post(
   '/:id/servicios/:serviceId/eliminar',
+  requireAuth,
   providerViewController.deleteServiceFromView
 );
 

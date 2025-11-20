@@ -7,7 +7,9 @@
     "whatsapp": "+54 9 11 1111-1111",
     "email": "juan.electricista@example.com",
     "zone": "Caballito",
-    "categories": ["electricista"],
+    "categories": [
+      "electricista"
+    ],
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"
   },
@@ -19,7 +21,9 @@
     "whatsapp": "+54 9 11 2222-2222",
     "email": "maria.plomeria@example.com",
     "zone": "Palermo",
-    "categories": ["plomero"],
+    "categories": [
+      "plomero"
+    ],
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"
   },
@@ -31,7 +35,9 @@
     "whatsapp": "+54 9 11 3333-3333",
     "email": "carlos.cerrajero@example.com",
     "zone": "Belgrano",
-    "categories": ["cerrajero"],
+    "categories": [
+      "cerrajero"
+    ],
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"
   },
@@ -43,7 +49,9 @@
     "whatsapp": "+54 9 11 4444-4444",
     "email": "laura.pintora@example.com",
     "zone": "Almagro",
-    "categories": ["pintor"],
+    "categories": [
+      "pintor"
+    ],
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"
   },
@@ -55,8 +63,22 @@
     "whatsapp": "+54 9 11 5555-5555",
     "email": "diego.gasista@example.com",
     "zone": "Flores",
-    "categories": ["gasista"],
+    "categories": [
+      "gasista"
+    ],
     "createdAt": "2025-01-01T00:00:00.000Z",
     "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "name": "henry2",
+    "description": "",
+    "experienceYears": 0,
+    "whatsapp": "",
+    "email": "haff@gmail.com",
+    "zone": "",
+    "categories": [],
+    "createdAt": "2025-11-20T00:37:41.717Z",
+    "updatedAt": "2025-11-20T00:37:41.717Z"
   }
 ]

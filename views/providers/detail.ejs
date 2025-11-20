@@ -61,7 +61,10 @@
   <p>
     <% if (provider.whatsapp) { %>
       <strong>WhatsApp:</strong>
-      <a href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>" target="_blank">
+      <a
+        href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>"
+        target="_blank"
+      >
         Contactar por WhatsApp
       </a>
       <br />
@@ -80,11 +83,13 @@
   <section>
     <h2>Servicios del proveedor</h2>
 
-    <p>
-      <a href="/proveedores/<%= provider.id %>/servicios/nuevo">
-        Agregar nuevo servicio
-      </a>
-    </p>
+    <% if (currentUser && currentUser.providerId === provider.id) { %>
+      <p>
+        <a href="/proveedores/<%= provider.id %>/servicios/nuevo">
+          Agregar nuevo servicio
+        </a>
+      </p>
+    <% } %>
 
     <% if (services && services.length > 0) { %>
       <ul>
@@ -112,137 +117,141 @@
                           </span><br />
                           <% } %>
 
-                            <a href="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/editar">
-                              Editar
-                            </a>
+                            <% if (currentUser && currentUser.providerId===provider.id) { %>
+                              <a href="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/editar">
+                                Editar
+                              </a>
 
-                            <form action="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/eliminar"
-                              method="POST" style="display: inline;">
-                              <button type="submit" onclick="return confirm('¿Eliminar este servicio?');">
-                                Eliminar
-                              </button>
-                            </form>
-                            </li>
-                            <hr />
-                            <% }); %>
-                              </ul>
-                              <% } else { %>
-                                <p>Este proveedor aún no tiene servicios cargados.</p>
-                                <% } %>
-                                  </section>
+                              <form action="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/eliminar"
+                                method="POST" style="display: inline;">
+                                <button type="submit" onclick="return confirm('¿Eliminar este servicio?');">
+                                  Eliminar
+                                </button>
+                              </form>
+                              <% } %>
+                                </li>
+                                <hr />
+                                <% }); %>
+                                  </ul>
+                                  <% } else { %>
+                                    <p>Este proveedor aún no tiene servicios cargados.</p>
+                                    <% } %>
+                                      </section>
 
-                                  <section>
-                                    <h2>Acuerdos registrados</h2>
+                                      <section>
+                                        <h2>Acuerdos registrados</h2>
 
-                                    <% if (agreements && agreements.length> 0) { %>
-                                      <ul>
-                                        <% agreements.forEach(function (agreement) { %>
-                                          <li>
-                                            <strong>Solicitante:</strong>
-                                            <%= agreement.clientName %><br />
+                                        <% if (agreements && agreements.length> 0) { %>
+                                          <ul>
+                                            <% agreements.forEach(function (agreement) { %>
+                                              <li>
+                                                <strong>Solicitante:</strong>
+                                                <%= agreement.clientName %><br />
 
-                                              <% if (agreement.type) { %>
-                                                <strong>Tipo:</strong>
-                                                <%= agreement.type %><br />
-                                                  <% } %>
+                                                  <% if (agreement.type) { %>
+                                                    <strong>Tipo:</strong>
+                                                    <%= agreement.type %><br />
+                                                      <% } %>
 
-                                                    <% if (agreement.moneyAmount !==null) { %>
-                                                      <strong>Dinero:</strong>
-                                                      <%= agreement.moneyAmount %>
-                                                        <%= agreement.moneyCurrency || '' %><br />
-                                                          <% } %>
+                                                        <% if (agreement.moneyAmount !==null) { %>
+                                                          <strong>Dinero:</strong>
+                                                          <%= agreement.moneyAmount %>
+                                                            <%= agreement.moneyCurrency || '' %><br />
+                                                              <% } %>
 
-                                                            <% if (agreement.exchangeHours !==null) { %>
-                                                              <strong>Horas:</strong>
-                                                              <%= agreement.exchangeHours %><br />
-                                                                <% } %>
+                                                                <% if (agreement.exchangeHours !==null) { %>
+                                                                  <strong>Horas:</strong>
+                                                                  <%= agreement.exchangeHours %><br />
+                                                                    <% } %>
 
-                                                                  <% if (agreement.description) { %>
-                                                                    <strong>Descripción:</strong>
-                                                                    <%= agreement.description %><br />
-                                                                      <% } %>
+                                                                      <% if (agreement.description) { %>
+                                                                        <strong>Descripción:</strong>
+                                                                        <%= agreement.description %><br />
+                                                                          <% } %>
 
-                                                                        <% if (agreement.status) { %>
-                                                                          <strong>Estado:</strong>
-                                                                          <%= agreement.status %><br />
-                                                                            <% } %>
-
-                                                                              <% if (agreement.estimatedDate) { %>
-                                                                                <small>
-                                                                                  Fecha estimada:
-                                                                                  <%= new
-                                                                                    Date(agreement.estimatedDate).toLocaleString('es-AR')
-                                                                                    %>
-                                                                                </small><br />
+                                                                            <% if (agreement.status) { %>
+                                                                              <strong>Estado:</strong>
+                                                                              <%= agreement.status %><br />
                                                                                 <% } %>
 
-                                                                                  <% if (agreement.status !=='cumplido'
-                                                                                    ) { %>
-                                                                                    <form
-                                                                                      action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/cumplir"
-                                                                                      method="POST"
-                                                                                      style="display: inline;">
-                                                                                      <button type="submit">Marcar como
-                                                                                        cumplido</button>
-                                                                                    </form>
-                                                                                    <% } else { %>
-                                                                                      <% if (!agreement.hasReview) { %>
-                                                                                        <a
-                                                                                          href="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas/nueva">
-                                                                                          Escribir reseña
-                                                                                        </a>
+                                                                                  <% if (agreement.estimatedDate) { %>
+                                                                                    <small>
+                                                                                      Fecha estimada:
+                                                                                      <%= new
+                                                                                        Date(agreement.estimatedDate).toLocaleString('es-AR')
+                                                                                        %>
+                                                                                    </small><br />
+                                                                                    <% } %>
+
+                                                                                      <% if (agreement.status
+                                                                                        !=='cumplido' ) { %>
+                                                                                        <form
+                                                                                          action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/cumplir"
+                                                                                          method="POST"
+                                                                                          style="display: inline;">
+                                                                                          <button type="submit">Marcar
+                                                                                            como cumplido</button>
+                                                                                        </form>
                                                                                         <% } else { %>
-                                                                                          <span>Reseña
-                                                                                            registrada.</span>
-                                                                                          <% } %>
-                                                                                            <% } %>
-                                          </li>
-                                          <hr />
-                                          <% }); %>
-                                      </ul>
-                                      <% } else { %>
-                                        <p>No hay acuerdos registrados para este proveedor.</p>
-                                        <% } %>
-                                  </section>
+                                                                                          <% if (!agreement.hasReview) {
+                                                                                            %>
+                                                                                            <a
+                                                                                              href="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas/nueva">
+                                                                                              Escribir reseña
+                                                                                            </a>
+                                                                                            <% } else { %>
+                                                                                              <span>Reseña
+                                                                                                registrada.</span>
+                                                                                              <% } %>
+                                                                                                <% } %>
+                                              </li>
+                                              <hr />
+                                              <% }); %>
+                                          </ul>
+                                          <% } else { %>
+                                            <p>No hay acuerdos registrados para este proveedor.</p>
+                                            <% } %>
+                                      </section>
 
-                                  <section>
-                                    <h2>Reseñas</h2>
+                                      <section>
+                                        <h2>Reseñas</h2>
 
-                                    <% if (reviews && reviews.length> 0) { %>
-                                      <ul>
-                                        <% reviews.forEach(function (review) { %>
-                                          <li>
-                                            <strong>Calificación:</strong>
-                                            <%= review.rating %> / 5<br />
+                                        <% if (reviews && reviews.length> 0) { %>
+                                          <ul>
+                                            <% reviews.forEach(function (review) { %>
+                                              <li>
+                                                <strong>Calificación:</strong>
+                                                <%= review.rating %> / 5<br />
 
-                                              <% if (review.authorName) { %>
-                                                <strong>Autor:</strong>
-                                                <%= review.authorName %><br />
-                                                  <% } %>
+                                                  <% if (review.authorName) { %>
+                                                    <strong>Autor:</strong>
+                                                    <%= review.authorName %><br />
+                                                      <% } %>
 
-                                                    <% if (review.comment) { %>
-                                                      <strong>Comentario:</strong>
-                                                      <%= review.comment %><br />
-                                                        <% } %>
-
-                                                          <% if (review.createdAt) { %>
-                                                            <small>
-                                                              Fecha:
-                                                              <%= new Date(review.createdAt).toLocaleString('es-AR') %>
-                                                            </small>
+                                                        <% if (review.comment) { %>
+                                                          <strong>Comentario:</strong>
+                                                          <%= review.comment %><br />
                                                             <% } %>
-                                          </li>
-                                          <hr />
-                                          <% }); %>
-                                      </ul>
-                                      <% } else { %>
-                                        <p>Este proveedor aún no tiene reseñas.</p>
-                                        <% } %>
-                                  </section>
 
-                                  <p>
-                                    <a href="/proveedores">Volver al listado de proveedores</a>
-                                  </p>
+                                                              <% if (review.createdAt) { %>
+                                                                <small>
+                                                                  Fecha:
+                                                                  <%= new Date(review.createdAt).toLocaleString('es-AR')
+                                                                    %>
+                                                                </small>
+                                                                <% } %>
+                                              </li>
+                                              <hr />
+                                              <% }); %>
+                                          </ul>
+                                          <% } else { %>
+                                            <p>Este proveedor aún no tiene reseñas.</p>
+                                            <% } %>
+                                      </section>
+
+                                      <p>
+                                        <a href="/proveedores">Volver al listado de proveedores</a>
+                                      </p>
 </body>
 
 </html>

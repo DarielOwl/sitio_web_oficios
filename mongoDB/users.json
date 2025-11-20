@@ -7,5 +7,14 @@
     "providerId": null,
     "createdAt": "2025-11-20T00:24:26.285Z",
     "updatedAt": "2025-11-20T00:24:26.285Z"
+  },
+  {
+    "id": "2",
+    "name": "henry2",
+    "email": "haff@gmail.com",
+    "passwordHash": "736088792e965bb1a80721b4a04eb78d:a366a796f56cc55531b8a42a572e642e2413d6340fd8563d3111b4804f7eab31",
+    "providerId": "6",
+    "createdAt": "2025-11-20T00:37:41.718Z",
+    "updatedAt": "2025-11-20T00:37:41.718Z"
   }
 ]

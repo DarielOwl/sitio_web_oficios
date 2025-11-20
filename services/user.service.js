@@ -2,6 +2,7 @@
 
 const crypto = require('crypto');
 const UserModel = require('../models/user.model');
+const ProviderModel = require('../models/provider.model');
 
 // Hash de contraseña con pbkdf2
 function hashPassword(password) {
@@ -52,21 +53,33 @@ async function registerUser({ name, email, password, providerId = null }) {
   const existing = UserModel.getUserByEmail(email);
   if (existing) {
     const error = new Error('Email is already in use');
-    error.statusCode = 409; // conflicto
+    error.statusCode = 409;
     throw error;
   }
 
   const passwordHash = hashPassword(password);
 
+  // Crear proveedor básico asociado a este usuario
+  const provider = ProviderModel.createProvider({
+    name: name || email,
+    description: '',
+    experienceYears: null,
+    zone: '',
+    categories: [],
+    whatsapp: '',
+    email
+  });
+
   const newUser = UserModel.createUser({
     name,
     email,
     passwordHash,
-    providerId
+    providerId: provider.id
   });
 
   return newUser;
 }
+
 
 // Autenticar usuario (login)
 async function authenticateUser(email, password) {

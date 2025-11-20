@@ -214,6 +214,12 @@ async function createReviewFromView(req, res) {
 async function showNewServiceForm(req, res) {
   try {
     const { id } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== id) {
+      return res.status(403).send('No tienes permiso para gestionar este proveedor');
+    }
+
     const provider = await providerService.getProviderById(id);
 
     return res.render('providers/newService', {
@@ -235,6 +241,12 @@ async function showNewServiceForm(req, res) {
 async function createServiceFromView(req, res) {
   try {
     const { id } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== id) {
+      return res.status(403).send('No tienes permiso para gestionar este proveedor');
+    }
+
     const {
       title,
       description,
@@ -282,6 +294,11 @@ async function showEditServiceForm(req, res) {
   try {
     const { id: providerId, serviceId } = req.params;
 
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== providerId) {
+      return res.status(403).send('No tienes permiso para gestionar este proveedor');
+    }
+
     const provider = await providerService.getProviderById(providerId);
     const service = await serviceService.getServiceById(serviceId);
 
@@ -309,6 +326,12 @@ async function showEditServiceForm(req, res) {
 async function updateServiceFromView(req, res) {
   try {
     const { id: providerId, serviceId } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== providerId) {
+      return res.status(403).send('No tienes permiso para gestionar este proveedor');
+    }
+
     const {
       title,
       description,
@@ -362,6 +385,11 @@ async function updateServiceFromView(req, res) {
 async function deleteServiceFromView(req, res) {
   try {
     const { id: providerId, serviceId } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.providerId !== providerId) {
+      return res.status(403).send('No tienes permiso para gestionar este proveedor');
+    }
 
     await serviceService.deleteService(serviceId);
 
