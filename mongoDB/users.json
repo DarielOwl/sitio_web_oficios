@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "name": "Henry",
+    "email": "henryferreira133@gmail.com",
+    "passwordHash": "65f7233152a05cb7506fdcc9b4bd2334:8417648d6b7d0c1da75e50b1c38a56ba57853ce162bea791210f26776b2428ea",
+    "providerId": null,
+    "createdAt": "2025-11-20T00:24:26.285Z",
+    "updatedAt": "2025-11-20T00:24:26.285Z"
+  },
+  {
+    "id": "2",
+    "name": "henry2",
+    "email": "haff@gmail.com",
+    "passwordHash": "736088792e965bb1a80721b4a04eb78d:a366a796f56cc55531b8a42a572e642e2413d6340fd8563d3111b4804f7eab31",
+    "providerId": "6",
+    "createdAt": "2025-11-20T00:37:41.718Z",
+    "updatedAt": "2025-11-20T00:37:41.718Z"
+  },
+  {
+    "id": "3",
+    "name": "Haff Soul",
+    "email": "haffsoul@gmail.com",
+    "passwordHash": "d0e93f20236a150278e7831d69f1ded4:a375e39017b61201e48f99a9b152b5b8cf4985f026df01f007fec1f270cfe106",
+    "providerId": "691e6bb91cda03417dff99b1",
+    "createdAt": "2025-11-20T01:15:37.318Z",
+    "updatedAt": "2025-11-20T01:15:37.318Z"
+  }
+]

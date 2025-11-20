@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Nuevo acuerdo - <%= provider.name %>
+    </title>
+</head>
+
+<body>
+    <h1>Nuevo acuerdo con <%= provider.name %>
+    </h1>
+
+    <% if (errorMessage) { %>
+        <p style="color: red;"><strong>
+                <%= errorMessage %>
+            </strong></p>
+        <% } %>
+
+            <form action="/proveedores/<%= provider.id %>/acuerdos" method="POST">
+                <p>
+                    <label for="clientName">Nombre del solicitante:</label><br />
+                    <input type="text" id="clientName" name="clientName" required />
+                </p>
+
+                <p>
+                    <label for="clientContact">Contacto del solicitante (correo o teléfono):</label><br />
+                    <input type="text" id="clientContact" name="clientContact" />
+                </p>
+
+                <p>
+                    <label for="serviceId">Servicio (opcional):</label><br />
+                    <select id="serviceId" name="serviceId">
+                        <option value="">-- Seleccionar servicio (opcional) --</option>
+                        <% if (services && services.length> 0) { %>
+                            <% services.forEach(function(service) { %>
+                                <option value="<%= service.id %>">
+                                    <%= service.title %>
+                                </option>
+                                <% }); %>
+                                    <% } %>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="type">Tipo de acuerdo:</label><br />
+                    <select id="type" name="type" required>
+                        <option value="dinero">Dinero</option>
+                        <option value="horas">Horas</option>
+                        <option value="mixto">Mixto</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="moneyAmount">Monto en dinero (si aplica):</label><br />
+                    <input type="number" id="moneyAmount" name="moneyAmount" step="0.01" />
+                    <input type="text" id="moneyCurrency" name="moneyCurrency" placeholder="ARS" />
+                </p>
+
+                <p>
+                    <label for="exchangeHours">Horas de intercambio (si aplica):</label><br />
+                    <input type="number" id="exchangeHours" name="exchangeHours" step="0.5" />
+                </p>
+
+                <p>
+                    <label for="estimatedDate">Fecha estimada (opcional):</label><br />
+                    <input type="datetime-local" id="estimatedDate" name="estimatedDate" />
+                </p>
+
+                <p>
+                    <label for="description">Descripción breve del acuerdo:</label><br />
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </p>
+
+                <button type="submit">Crear acuerdo</button>
+            </form>
+
+            <p>
+                <a href="/proveedores/<%= provider.id %>">Volver al perfil del proveedor</a>
+            </p>
+</body>
+
+</html>

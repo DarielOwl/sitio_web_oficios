@@ -6,12 +6,14 @@
       <div class="flex items-center space-x-6 text-sm">
         <!-- <a href="/" class="font-semibold">Oficios Locales</a> -->
 
-        <% if (currentUser && currentUser.rol === 'proveedor') { %>
-          <a href="/" class="hover:bg-blue-700 px-3 py-1 rounded">Dashboard</a>
+        <% if (currentUser && currentUser.rol==='proveedor' ) { %>
+          <a href="/proveedor/dashboard" class="hover:bg-blue-700 px-3 py-1 rounded">Dashboard</a>
           <a href="/proveedor/servicios" class="hover:bg-blue-700 px-3 py-1 rounded">Servicios</a>
           <a href="/proveedor/acuerdos" class="hover:bg-blue-700 px-3 py-1 rounded">Acuerdos</a>
           <a href="/proveedor/resenas" class="hover:bg-blue-700 px-3 py-1 rounded">Reseñas</a>
-        <% } %>
+          <a href="/proveedor/perfil" class="hover:bg-blue-700 px-3 py-1 rounded">Mi perfil</a>
+
+          <% } %>
       </div>
 
       <!-- Derecha: usuario / logout -->
@@ -20,21 +22,15 @@
           <span class="text-blue-100">
             Hola, <%= currentUser.nombre %>
           </span>
-          <a
-            href="/auth/logout"
-            class="bg-blue-500 hover:bg-blue-700 px-3 py-1 rounded font-medium"
-          >
+          <a href="/auth/logout" class="bg-blue-500 hover:bg-blue-700 px-3 py-1 rounded font-medium">
             Cerrar sesión
           </a>
-        <% } else { %>
-          <a href="/auth/login" class="hover:underline">Iniciar sesión</a>
-          <a
-            href="/auth/register"
-            class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-50"
-          >
-            Regístrate
-          </a>
-        <% } %>
+          <% } else { %>
+            <a href="/auth/login" class="hover:underline">Iniciar sesión</a>
+            <a href="/auth/register" class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-50">
+              Regístrate
+            </a>
+            <% } %>
       </div>
 
     </div>

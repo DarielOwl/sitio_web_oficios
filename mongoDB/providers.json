@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "name": "Carlos Electricista",
+    "description": "Instalaciones y reparaciones eléctricas domiciliarias.",
+    "experienceYears": 8,
+    "zone": "Palermo",
+    "categories": ["electricista"],
+    "whatsapp": "+54 9 11 1111 1111",
+    "email": "carlos.electricista@example.com",
+    "createdAt": "2025-01-01T10:00:00.000Z",
+    "updatedAt": "2025-01-01T10:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "name": "María Plomera",
+    "description": "Reparaciones de plomería y destapaciones urgentes.",
+    "experienceYears": 5,
+    "zone": "Caballito",
+    "categories": ["plomero"],
+    "whatsapp": "+54 9 11 2222 2222",
+    "email": "maria.plomera@example.com",
+    "createdAt": "2025-01-02T10:00:00.000Z",
+    "updatedAt": "2025-01-02T10:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "name": "Jorge Gasista",
+    "description": "Instalaciones y revisiones de gas domiciliario.",
+    "experienceYears": 10,
+    "zone": "Belgrano",
+    "categories": ["gasista"],
+    "whatsapp": "+54 9 11 3333 3333",
+    "email": "jorge.gasista@example.com",
+    "createdAt": "2025-01-03T10:00:00.000Z",
+    "updatedAt": "2025-01-03T10:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "name": "Lucía Pintora",
+    "description": "Pintura de interiores y exteriores, trabajos en altura.",
+    "experienceYears": 4,
+    "zone": "Almagro",
+    "categories": ["pintor"],
+    "whatsapp": "+54 9 11 4444 4444",
+    "email": "lucia.pintora@example.com",
+    "createdAt": "2025-01-04T10:00:00.000Z",
+    "updatedAt": "2025-01-04T10:00:00.000Z"
+  },
+  {
+    "id": "5",
+    "name": "Diego Herrero",
+    "description": "Rejas, portones y estructuras metálicas a medida.",
+    "experienceYears": 12,
+    "zone": "Flores",
+    "categories": ["herrero"],
+    "whatsapp": "+54 9 11 5555 5555",
+    "email": "diego.herrero@example.com",
+    "createdAt": "2025-01-05T10:00:00.000Z",
+    "updatedAt": "2025-01-05T10:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "name": "Ana Carpintera",
+    "description": "Muebles a medida, arreglos y restauraciones.",
+    "experienceYears": 6,
+    "zone": "Recoleta",
+    "categories": ["carpintero"],
+    "whatsapp": "+54 9 11 6666 6666",
+    "email": "ana.carpintera@example.com",
+    "createdAt": "2025-01-06T10:00:00.000Z",
+    "updatedAt": "2025-01-06T10:00:00.000Z"
+  },
+  {
+    "id": "7",
+    "name": "Pedro Albañil",
+    "description": "Reformas, refacciones y pequeñas obras.",
+    "experienceYears": 9,
+    "zone": "Villa Urquiza",
+    "categories": ["albañil"],
+    "whatsapp": "+54 9 11 7777 7777",
+    "email": "pedro.albanil@example.com",
+    "createdAt": "2025-01-07T10:00:00.000Z",
+    "updatedAt": "2025-01-07T10:00:00.000Z"
+  },
+  {
+    "id": "8",
+    "name": "Sofía Niñera",
+    "description": "Cuidado de niños por hora, referencias comprobables.",
+    "experienceYears": 3,
+    "zone": "Palermo",
+    "categories": ["niñera"],
+    "whatsapp": "+54 9 11 8888 8888",
+    "email": "sofia.ninera@example.com",
+    "createdAt": "2025-01-08T10:00:00.000Z",
+    "updatedAt": "2025-01-08T10:00:00.000Z"
+  },
+  {
+    "id": "9",
+    "name": "Nicolás Técnico PC",
+    "description": "Reparación de computadoras, instalación de software.",
+    "experienceYears": 7,
+    "zone": "Caballito",
+    "categories": ["tecnico pc"],
+    "whatsapp": "+54 9 11 9999 9999",
+    "email": "nicolas.tecnico@example.com",
+    "createdAt": "2025-01-09T10:00:00.000Z",
+    "updatedAt": "2025-01-09T10:00:00.000Z"
+  },
+  {
+    "id": "10",
+    "name": "Laura Costurera",
+    "description": "Arreglos de ropa y confecciones a medida.",
+    "experienceYears": 11,
+    "zone": "Once",
+    "categories": ["costurera"],
+    "whatsapp": "+54 9 11 1010 1010",
+    "email": "laura.costurera@example.com",
+    "createdAt": "2025-01-10T10:00:00.000Z",
+    "updatedAt": "2025-01-10T10:00:00.000Z"
+  }
+]

@@ -1,105 +1,68 @@
-// ---------------------------------------------
-// Core & Setup
-// ---------------------------------------------
 const express = require('express');
 const path = require('path');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const morgan = require('morgan');
-const session = require('express-session');              // NEW
-const { attachUser } = require('./middlewares/authMiddleware'); // NEW
-
-// Cargar variables de entorno (.env)
-dotenv.config();
-
+const session = require('express-session'); // <-- agregar
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// ---------------------------------------------
-// Middlewares
-// ---------------------------------------------
+require('dotenv').config();
+const connectDB = require('./config/database');
+
+// Motor de vistas
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
 
-// Session (en memoria, suficiente para la tarea)
+// Sesiones
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'dev-secret',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: false
   })
 );
 
-// Cargar usuario en cada request
-app.use(attachUser);
-
-// Archivos estáticos (Tailwind compilado, imágenes, etc.)
+// Static
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configurar EJS
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Auth middleware (usuario actual)
+const { attachCurrentUser } = require('./middlewares/auth.middleware');
+app.use(attachCurrentUser);
 
-// ---------------------------------------------
-// Conexión a MongoDB
-// ---------------------------------------------
-mongoose
-  .connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sitio_oficios', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('✅ Conectado a MongoDB'))
-  .catch((err) => console.error('❌ Error al conectar con MongoDB:', err));
+// Rutas API
+const providerRoutes = require('./routes/provider.routes');
+const serviceRoutes = require('./routes/service.routes');
+const agreementRoutes = require('./routes/agreement.routes');
+const reviewRoutes = require('./routes/review.routes');
+const homeViewRoutes = require('./routes/home.view.routes');
 
-// ---------------------------------------------
-// Rutas
-// ---------------------------------------------
-const proveedorRouter = require('./routes/proveedor');
-const authRouter = require('./routes/auth'); // NEW
+app.use('/providers', providerRoutes);
+app.use('/services', serviceRoutes);
+app.use('/agreements', agreementRoutes);
+app.use('/reviews', reviewRoutes);
+app.use('/', homeViewRoutes);
 
-// ---------------------------------------------
-// Services
-// ---------------------------------------------
-const proveedorService = require('./services/proveedorService');
+// Rutas vistas
+const providerViewRoutes = require('./routes/provider.view.routes');
+const serviceViewRoutes = require('./routes/service.view.routes');
+const authViewRoutes = require('./routes/auth.view.routes'); // <-- agregar
 
-// Página pública principal
-app.get('/', async (req, res) => {
-  // si no hay usuario en sesión, mostrar login primero
-  if (!req.user) {
-    return res.redirect('/auth/login');
-  }
+app.use('/proveedores', providerViewRoutes);
+app.use('/servicios', serviceViewRoutes);
+app.use('/auth', authViewRoutes); // <-- agregar
 
-  try {
-    const proveedores = await proveedorService.obtenerProveedores();
-    res.render('index', { proveedores });
-  } catch (error) {
-    console.error('Error al cargar proveedores:', error);
-    res.render('index', { proveedores: [] });
-  }
+
+
+const PORT = process.env.PORT || 3000;
+
+// primero conectamos a la base
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 });
 
-// (Opcional) búsqueda: GET /buscar?q=...
-app.get('/buscar', async (req, res) => {
-  const q = req.query.q || '';
-  try {
-    const proveedores = await proveedorService.buscarProveedores(q);
-    res.render('index', { proveedores });
-  } catch (error) {
-    console.error('Error al buscar proveedores:', error);
-    res.render('index', { proveedores: [] });
-  }
-});
-
-// Rutas de autenticación
-app.use('/auth', authRouter);
-
-// Rutas de proveedores (protegidas por middleware en el router)
-app.use('/proveedor', proveedorRouter);
-
-// ---------------------------------------------
-// Servidor
-// ---------------------------------------------
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

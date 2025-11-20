@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Nuevo servicio - <%= provider.name %>
+    </title>
+</head>
+
+<body>
+    <h1>Nuevo servicio para <%= provider.name %>
+    </h1>
+
+    <% if (errorMessage) { %>
+        <p style="color: red;"><strong>
+                <%= errorMessage %>
+            </strong></p>
+        <% } %>
+
+            <form action="/proveedores/<%= provider.id %>/servicios" method="POST">
+                <p>
+                    <label for="title">Título del servicio:</label><br />
+                    <input type="text" id="title" name="title" required />
+                </p>
+
+                <p>
+                    <label for="description">Descripción:</label><br />
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </p>
+
+                <p>
+                    <label for="category">Categoría:</label><br />
+                    <input type="text" id="category" name="category" placeholder="electricista, plomero, etc." />
+                </p>
+
+                <p>
+                    <label for="priceAmount">Monto en dinero (si aplica):</label><br />
+                    <input type="number" id="priceAmount" name="priceAmount" step="0.01" />
+                    <input type="text" id="priceCurrency" name="priceCurrency" placeholder="ARS" />
+                </p>
+
+                <p>
+                    <label for="exchangeHours">Horas de intercambio (si aplica):</label><br />
+                    <input type="number" id="exchangeHours" name="exchangeHours" step="0.5" />
+                    <input type="text" id="exchangeUnit" name="exchangeUnit" placeholder="horas" />
+                </p>
+
+                <button type="submit">Crear servicio</button>
+            </form>
+
+            <p>
+                <a href="/proveedores/<%= provider.id %>">Volver al perfil del proveedor</a>
+            </p>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= tituloVista %></title>
+  <link rel="stylesheet" href="/css/output.css" />
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <%- include('../partials/navbar') %>
+
+  <main class="max-w-lg mx-auto px-4 py-8">
+    <h1 class="text-2xl font-semibold mb-4"><%= tituloVista %></h1>
+
+    <form action="<%= action %>" method="POST" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">Título del servicio</label>
+        <input
+          type="text"
+          name="titulo"
+          required
+          value="<%= servicio.titulo || '' %>"
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Categoría</label>
+        <input
+          type="text"
+          name="categoria"
+          value="<%= servicio.categoria || '' %>"
+          placeholder="Plomero, electricista, etc."
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Descripción</label>
+        <textarea
+          name="descripcion"
+          rows="3"
+          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ><%= servicio.descripcion || '' %></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Precio mínimo (opcional)</label>
+          <input
+            type="number"
+            step="1"
+            name="precioMin"
+            value="<%= servicio.precioMin || '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Precio máximo (opcional)</label>
+          <input
+            type="number"
+            step="1"
+            name="precioMax"
+            value="<%= servicio.precioMax || '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 items-center">
+        <div class="flex items-center gap-2 mt-2">
+          <input
+            id="aceptaTrueque"
+            type="checkbox"
+            name="aceptaTrueque"
+            <% if (servicio.aceptaTrueque) { %> checked <% } %>
+            class="h-4 w-4 text-blue-600 border-slate-300 rounded"
+          />
+          <label for="aceptaTrueque" class="text-sm text-slate-700">
+            Acepto trueque / intercambio
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Horas de intercambio (opcional)</label>
+          <input
+            type="number"
+            step="0.5"
+            name="horasIntercambio"
+            value="<%= servicio.horasIntercambio || '' %>"
+            class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <a
+          href="/proveedor/servicios"
+          class="px-4 py-2 text-sm border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

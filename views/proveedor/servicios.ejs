@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mis servicios</title>
+  <link rel="stylesheet" href="/css/output.css" />
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <% /* Navbar azul que ya tienes */ %>
+  <%- include('../partials/navbar') %>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-semibold">Mis servicios</h1>
+        <p class="text-slate-600 text-sm">
+          Crea y administra los servicios que ofreces en la plataforma.
+        </p>
+      </div>
+      <a
+        href="/proveedor/servicios/nuevo"
+        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+      >
+        + Nuevo servicio
+      </a>
+    </div>
+
+    <% if (error) { %>
+      <div class="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <% if (!servicios || servicios.length === 0) { %>
+      <p class="text-sm text-slate-600">
+        Todavía no tienes servicios creados. Crea el primero con el botón de arriba.
+      </p>
+    <% } else { %>
+      <div class="space-y-4">
+        <% servicios.forEach(servicio => { %>
+          <div class="bg-white rounded-lg shadow p-4 flex justify-between items-start">
+            <div>
+              <h2 class="font-semibold text-lg"><%= servicio.titulo %></h2>
+              <p class="text-xs text-slate-500 mb-1">
+                <%= servicio.categoria || 'Sin categoría' %>
+              </p>
+              <p class="text-sm text-slate-700 mb-2">
+                <%= servicio.descripcion || 'Sin descripción.' %>
+              </p>
+
+              <div class="flex flex-wrap gap-3 text-xs text-slate-600">
+                <% if (servicio.precioMin || servicio.precioMax) { %>
+                  <span>
+                    Precio:
+                    <%= servicio.precioMin ? '$' + servicio.precioMin : '' %>
+                    <% if (servicio.precioMax) { %>
+                      - $<%= servicio.precioMax %>
+                    <% } %>
+                  </span>
+                <% } %>
+
+                <% if (servicio.aceptaTrueque) { %>
+                  <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded-full">
+                    Acepta trueque
+                  </span>
+                <% } %>
+
+                <% if (servicio.horasIntercambio) { %>
+                  <span><%= servicio.horasIntercambio %> h de intercambio</span>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 items-end">
+              <a
+                href="/proveedor/servicios/<%= servicio._id %>/editar"
+                class="px-3 py-1 text-xs bg-slate-800 text-white rounded hover:bg-slate-900"
+              >
+                Editar
+              </a>
+
+              <form
+                action="/proveedor/servicios/<%= servicio._id %>/eliminar"
+                method="POST"
+                onsubmit="return confirm('¿Seguro que quieres eliminar este servicio?');"
+              >
+                <button
+                  type="submit"
+                  class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                >
+                  Eliminar
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+</body>
+</html>

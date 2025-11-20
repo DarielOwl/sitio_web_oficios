@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "providerId": "1",
+    "agreementId": "1",
+    "rating": 5,
+    "authorName": "Juan Pérez",
+    "comment": "Excelente trabajo, rápido y prolijo.",
+    "createdAt": "2025-03-02T10:00:00.000Z",
+    "updatedAt": "2025-03-02T10:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "providerId": "2",
+    "agreementId": "2",
+    "rating": 4,
+    "authorName": "Mariana Torres",
+    "comment": "Buen servicio, llegó un poco más tarde pero resolvió todo.",
+    "createdAt": "2025-03-03T11:00:00.000Z",
+    "updatedAt": "2025-03-03T11:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "providerId": "3",
+    "agreementId": "3",
+    "rating": 5,
+    "authorName": "Luciano Gómez",
+    "comment": "Muy profesional, explicó todo lo que hizo.",
+    "createdAt": "2025-03-06T09:00:00.000Z",
+    "updatedAt": "2025-03-06T09:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "providerId": "8",
+    "agreementId": "5",
+    "rating": 5,
+    "authorName": "Familia López",
+    "comment": "Los chicos quedaron encantados, muy responsable.",
+    "createdAt": "2025-03-04T09:00:00.000Z",
+    "updatedAt": "2025-03-04T09:00:00.000Z"
+  },
+  {
+    "id": "5",
+    "providerId": "1",
+    "agreementId": "7",
+    "rating": 1,
+    "authorName": "Henry",
+    "comment": "Una bosta",
+    "createdAt": "2025-11-20T00:55:37.034Z",
+    "updatedAt": "2025-11-20T00:55:37.034Z"
+  }
+]
