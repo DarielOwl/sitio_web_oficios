@@ -16,5 +16,14 @@
     "providerId": "6",
     "createdAt": "2025-11-20T00:37:41.718Z",
     "updatedAt": "2025-11-20T00:37:41.718Z"
+  },
+  {
+    "id": "3",
+    "name": "Haff Soul",
+    "email": "haffsoul@gmail.com",
+    "passwordHash": "d0e93f20236a150278e7831d69f1ded4:a375e39017b61201e48f99a9b152b5b8cf4985f026df01f007fec1f270cfe106",
+    "providerId": "691e6bb91cda03417dff99b1",
+    "createdAt": "2025-11-20T01:15:37.318Z",
+    "updatedAt": "2025-11-20T01:15:37.318Z"
   }
 ]

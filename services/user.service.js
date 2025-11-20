@@ -2,7 +2,7 @@
 
 const crypto = require('crypto');
 const UserModel = require('../models/user.model');
-const ProviderModel = require('../models/provider.model');
+const providerService = require('../services/provider.service');
 
 // Hash de contraseña con pbkdf2
 function hashPassword(password) {
@@ -33,7 +33,7 @@ function verifyPassword(password, storedHash) {
 }
 
 // Registrar usuario nuevo
-async function registerUser({ name, email, password, providerId = null }) {
+async function registerUser({ name, email, password }) {
   const errors = [];
 
   if (!email || typeof email !== 'string' || email.trim().length === 0) {
@@ -53,14 +53,14 @@ async function registerUser({ name, email, password, providerId = null }) {
   const existing = UserModel.getUserByEmail(email);
   if (existing) {
     const error = new Error('Email is already in use');
-    error.statusCode = 409;
+    error.statusCode = 409; // conflicto
     throw error;
   }
 
   const passwordHash = hashPassword(password);
 
-  // Crear proveedor básico asociado a este usuario
-  const provider = ProviderModel.createProvider({
+  // Crear proveedor básico asociado a este usuario, ahora en Mongo
+  const provider = await providerService.createProvider({
     name: name || email,
     description: '',
     experienceYears: null,
@@ -74,12 +74,11 @@ async function registerUser({ name, email, password, providerId = null }) {
     name,
     email,
     passwordHash,
-    providerId: provider.id
+    providerId: provider.id // id de Mongo en string
   });
 
   return newUser;
 }
-
 
 // Autenticar usuario (login)
 async function authenticateUser(email, password) {
@@ -91,7 +90,6 @@ async function authenticateUser(email, password) {
 
   const user = UserModel.getUserByEmail(email);
 
-  // Siempre mismo mensaje para no revelar qué falló
   const invalidError = new Error('Invalid email or password');
   invalidError.statusCode = 401;
 

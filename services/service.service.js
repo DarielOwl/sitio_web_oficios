@@ -1,7 +1,7 @@
 // services/service.service.js
 
 const ServiceModel = require('../models/service.model');
-const ProviderModel = require('../models/provider.model');
+const providerService = require('../services/provider.service');
 
 async function getAllServices(filter = {}) {
   const { providerId, category, zone } = filter;
@@ -19,7 +19,7 @@ async function getAllServices(filter = {}) {
   }
 
   if (zone) {
-    const providers = ProviderModel.getAllProviders();
+    const providers = await providerService.getAllProviders();
     const providerIdsInZone = providers
       .filter((p) => p.zone === zone)
       .map((p) => p.id);
