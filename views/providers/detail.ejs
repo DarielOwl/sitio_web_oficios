@@ -12,7 +12,6 @@
     <%= provider.name %>
   </h1>
 
-
   <% if (ratingSummary && ratingSummary.totalReviews> 0) { %>
     <p>
       <strong>Reputación:</strong>
@@ -25,28 +24,32 @@
       </p>
       <% } %>
 
-
         <% if (provider.description) { %>
-          <p><strong>Descripción:</strong>
+          <p>
+            <strong>Descripción:</strong>
             <%= provider.description %>
           </p>
           <% } %>
 
             <% if (provider.experienceYears) { %>
-              <p><strong>Experiencia:</strong>
+              <p>
+                <strong>Experiencia:</strong>
                 <%= provider.experienceYears %> años
               </p>
               <% } %>
 
                 <% if (provider.zone) { %>
-                  <p><strong>Zona:</strong>
+                  <p>
+                    <strong>Zona:</strong>
                     <%= provider.zone %>
                   </p>
                   <% } %>
 
                     <% if (provider.categories && provider.categories.length> 0) { %>
-                      <p><strong>Categorías:</strong>
-                        <%= provider.categories.join(', ') %></p>
+                      <p>
+                        <strong>Categorías:</strong>
+                        <%= provider.categories.join(', ') %>
+    </p>
   <% } %>
 
   <p>
@@ -54,7 +57,6 @@
       Registrar nuevo acuerdo
     </a>
   </p>
-
 
   <p>
     <% if (provider.whatsapp) { %>
@@ -75,14 +77,18 @@
 
   <hr />
 
-   <hr />
-
   <section>
     <h2>Servicios del proveedor</h2>
 
+    <p>
+      <a href="/proveedores/<%= provider.id %>/servicios/nuevo">
+        Agregar nuevo servicio
+      </a>
+    </p>
+
     <% if (services && services.length > 0) { %>
       <ul>
-        <% services.forEach(function(service) { %>
+        <% services.forEach(function (service) { %>
           <li>
             <strong><%= service.title %></strong><br />
 
@@ -95,12 +101,27 @@
             <% } %>
 
             <% if (service.priceAmount !== null) { %>
-              <span>Precio: <%= service.priceAmount %> <%= service.priceCurrency || '' %></span><br />
+              <span>
+                Precio: <%= service.priceAmount %> <%= service.priceCurrency || '' %>
+              </span><br />
             <% } %>
 
             <% if (service.exchangeHours !== null) { %>
-              <span>Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || ' horas' %></span><br />
+              <span>
+                Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || ' horas' %>
+                          </span><br />
                           <% } %>
+
+                            <a href="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/editar">
+                              Editar
+                            </a>
+
+                            <form action="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/eliminar"
+                              method="POST" style="display: inline;">
+                              <button type="submit" onclick="return confirm('¿Eliminar este servicio?');">
+                                Eliminar
+                              </button>
+                            </form>
                             </li>
                             <hr />
                             <% }); %>
@@ -115,7 +136,7 @@
 
                                     <% if (agreements && agreements.length> 0) { %>
                                       <ul>
-                                        <% agreements.forEach(function(agreement) { %>
+                                        <% agreements.forEach(function (agreement) { %>
                                           <li>
                                             <strong>Solicitante:</strong>
                                             <%= agreement.clientName %><br />
@@ -147,9 +168,12 @@
                                                                             <% } %>
 
                                                                               <% if (agreement.estimatedDate) { %>
-                                                                                <small>Fecha estimada: <%= new
+                                                                                <small>
+                                                                                  Fecha estimada:
+                                                                                  <%= new
                                                                                     Date(agreement.estimatedDate).toLocaleString('es-AR')
-                                                                                    %></small><br />
+                                                                                    %>
+                                                                                </small><br />
                                                                                 <% } %>
 
                                                                                   <% if (agreement.status !=='cumplido'
@@ -172,7 +196,6 @@
                                                                                             registrada.</span>
                                                                                           <% } %>
                                                                                             <% } %>
-
                                           </li>
                                           <hr />
                                           <% }); %>
@@ -182,14 +205,12 @@
                                         <% } %>
                                   </section>
 
-
-
                                   <section>
                                     <h2>Reseñas</h2>
 
                                     <% if (reviews && reviews.length> 0) { %>
                                       <ul>
-                                        <% reviews.forEach(function(review) { %>
+                                        <% reviews.forEach(function (review) { %>
                                           <li>
                                             <strong>Calificación:</strong>
                                             <%= review.rating %> / 5<br />
@@ -205,8 +226,9 @@
                                                         <% } %>
 
                                                           <% if (review.createdAt) { %>
-                                                            <small>Fecha: <%= new
-                                                                Date(review.createdAt).toLocaleString('es-AR') %>
+                                                            <small>
+                                                              Fecha:
+                                                              <%= new Date(review.createdAt).toLocaleString('es-AR') %>
                                                             </small>
                                                             <% } %>
                                           </li>
@@ -217,7 +239,6 @@
                                         <p>Este proveedor aún no tiene reseñas.</p>
                                         <% } %>
                                   </section>
-
 
                                   <p>
                                     <a href="/proveedores">Volver al listado de proveedores</a>

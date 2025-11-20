@@ -57,11 +57,11 @@
     "title": "Cambio de disyuntor",
     "description": "Reemplazo de disyuntor y pruebas básicas de seguridad.",
     "category": "electricista",
-    "priceAmount": 25000,
-    "priceCurrency": "ARS",
-    "exchangeHours": null,
+    "priceAmount": 2500,
+    "priceCurrency": "UYU",
+    "exchangeHours": 0.5,
     "exchangeUnit": null,
     "createdAt": "2025-11-19T22:59:24.760Z",
-    "updatedAt": "2025-11-19T22:59:24.760Z"
+    "updatedAt": "2025-11-20T00:13:05.780Z"
   }
 ]

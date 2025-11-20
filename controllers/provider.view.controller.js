@@ -50,6 +50,8 @@ async function showProviderDetail(req, res) {
   }
 }
 
+// ---------- ACUERDOS DESDE VISTA ----------
+
 // GET /proveedores/:id/acuerdos/nuevo → formulario de nuevo acuerdo
 async function showNewAgreementForm(req, res) {
   try {
@@ -139,6 +141,8 @@ async function markAgreementAsCompleted(req, res) {
   }
 }
 
+// ---------- RESEÑAS DESDE VISTA ----------
+
 // GET /proveedores/:id/acuerdos/:agreementId/resenas/nueva → formulario de reseña
 async function showNewReviewForm(req, res) {
   try {
@@ -204,6 +208,170 @@ async function createReviewFromView(req, res) {
   }
 }
 
+// ---------- SERVICIOS DESDE VISTA ----------
+
+// GET /proveedores/:id/servicios/nuevo → formulario nuevo servicio
+async function showNewServiceForm(req, res) {
+  try {
+    const { id } = req.params;
+    const provider = await providerService.getProviderById(id);
+
+    return res.render('providers/newService', {
+      provider,
+      errorMessage: null
+    });
+  } catch (error) {
+    console.error('Error rendering new service form:', error);
+
+    if (error.statusCode === 404) {
+      return res.status(404).send('Proveedor no encontrado');
+    }
+
+    return res.status(500).send('Error interno al mostrar el formulario de servicio');
+  }
+}
+
+// POST /proveedores/:id/servicios → crear servicio desde vista
+async function createServiceFromView(req, res) {
+  try {
+    const { id } = req.params;
+    const {
+      title,
+      description,
+      category,
+      priceAmount,
+      priceCurrency,
+      exchangeHours,
+      exchangeUnit
+    } = req.body || {};
+
+    const data = {
+      providerId: id,
+      title,
+      description,
+      category,
+      priceAmount: priceAmount ? Number(priceAmount) : undefined,
+      priceCurrency,
+      exchangeHours: exchangeHours ? Number(exchangeHours) : undefined,
+      exchangeUnit
+    };
+
+    await serviceService.createService(data);
+
+    return res.redirect(`/proveedores/${id}`);
+  } catch (error) {
+    console.error('Error creating service from view:', error);
+
+    try {
+      const { id } = req.params;
+      const provider = await providerService.getProviderById(id);
+
+      return res.status(error.statusCode || 400).render('providers/newService', {
+        provider,
+        errorMessage: error.message || 'Error al crear el servicio'
+      });
+    } catch (innerError) {
+      console.error('Error rendering service form after error:', innerError);
+      return res.status(500).send('Error interno al procesar el servicio');
+    }
+  }
+}
+
+// GET /proveedores/:id/servicios/:serviceId/editar → formulario editar servicio
+async function showEditServiceForm(req, res) {
+  try {
+    const { id: providerId, serviceId } = req.params;
+
+    const provider = await providerService.getProviderById(providerId);
+    const service = await serviceService.getServiceById(serviceId);
+
+    if (service.providerId !== providerId) {
+      return res.status(400).send('El servicio no pertenece a este proveedor');
+    }
+
+    return res.render('providers/editService', {
+      provider,
+      service,
+      errorMessage: null
+    });
+  } catch (error) {
+    console.error('Error rendering edit service form:', error);
+
+    if (error.statusCode === 404) {
+      return res.status(404).send('Proveedor o servicio no encontrado');
+    }
+
+    return res.status(500).send('Error interno al mostrar el formulario de edición');
+  }
+}
+
+// POST /proveedores/:id/servicios/:serviceId/editar → actualizar servicio desde vista
+async function updateServiceFromView(req, res) {
+  try {
+    const { id: providerId, serviceId } = req.params;
+    const {
+      title,
+      description,
+      category,
+      priceAmount,
+      priceCurrency,
+      exchangeHours,
+      exchangeUnit
+    } = req.body || {};
+
+    const data = {
+      title,
+      description,
+      category,
+      priceAmount:
+        priceAmount === '' || priceAmount === undefined
+          ? null
+          : Number(priceAmount),
+      priceCurrency: priceCurrency || null,
+      exchangeHours:
+        exchangeHours === '' || exchangeHours === undefined
+          ? null
+          : Number(exchangeHours),
+      exchangeUnit: exchangeUnit || null
+    };
+
+    await serviceService.updateService(serviceId, data);
+
+    return res.redirect(`/proveedores/${providerId}`);
+  } catch (error) {
+    console.error('Error updating service from view:', error);
+
+    try {
+      const { id: providerId, serviceId } = req.params;
+      const provider = await providerService.getProviderById(providerId);
+      const service = await serviceService.getServiceById(serviceId);
+
+      return res.status(error.statusCode || 400).render('providers/editService', {
+        provider,
+        service,
+        errorMessage: error.message || 'Error al actualizar el servicio'
+      });
+    } catch (innerError) {
+      console.error('Error rendering edit service form after error:', innerError);
+      return res.status(500).send('Error interno al procesar la actualización');
+    }
+  }
+}
+
+// POST /proveedores/:id/servicios/:serviceId/eliminar → eliminar servicio
+async function deleteServiceFromView(req, res) {
+  try {
+    const { id: providerId, serviceId } = req.params;
+
+    await serviceService.deleteService(serviceId);
+
+    return res.redirect(`/proveedores/${providerId}`);
+  } catch (error) {
+    console.error('Error deleting service from view:', error);
+    return res.status(error.statusCode || 500).send(error.message || 'Error interno');
+  }
+}
+
 module.exports = {
   showProvidersList,
   showProviderDetail,
@@ -211,5 +379,10 @@ module.exports = {
   createAgreementFromView,
   markAgreementAsCompleted,
   showNewReviewForm,
-  createReviewFromView
+  createReviewFromView,
+  showNewServiceForm,
+  createServiceFromView,
+  showEditServiceForm,
+  updateServiceFromView,
+  deleteServiceFromView
 };
