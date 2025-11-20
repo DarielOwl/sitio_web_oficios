@@ -1,50 +1,58 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Inicio - Sitio de oficios</title>
 </head>
+
 <body>
   <h1>Sitio de oficios locales</h1>
 
   <% if (currentUser) { %>
     <p>
-      Sesión iniciada como <strong><%= currentUser.email %></strong>
-      <form action="/auth/logout" method="POST" style="display: inline;">
-        <button type="submit">Cerrar sesión</button>
-      </form>
+      Sesión iniciada como <strong>
+        <%= currentUser.email %>
+      </strong>
+      (<%= currentUser.role==='provider' ? 'Proveedor' : 'Cliente' %>)
+        <form action="/auth/logout" method="POST" style="display: inline;">
+          <button type="submit">Cerrar sesión</button>
+        </form>
     </p>
-  <% } else { %>
-    <p>
-      <a href="/auth/login">Iniciar sesión</a> |
-      <a href="/auth/register">Registrarse como proveedor</a>
-    </p>
-  <% } %>
+    <% } else { %>
+      <p>
+        <a href="/auth/login">Iniciar sesión</a> |
+        <a href="/auth/register">Registrarse como proveedor</a> |
+        <a href="/auth/register-client">Registrarse como cliente</a>
+      </p>
+      <% } %>
 
-  <hr />
 
-  <section>
-    <h2>Explorar</h2>
-    <ul>
-      <li>
-        <a href="/servicios">Explorar servicios</a>
-      </li>
-      <li>
-        <a href="/proveedores">Ver listado de proveedores</a>
-      </li>
-    </ul>
-  </section>
+        <hr />
 
-  <section>
-    <h2>¿Cómo funciona?</h2>
-    <p>
-      1) Como visitante o solicitante, podés navegar por servicios y proveedores,
-      filtrar por categoría y zona, y contactar por WhatsApp o correo.
-    </p>
-    <p>
-      2) Como proveedor, podés registrarte, completar tu perfil, crear servicios,
-      registrar acuerdos con clientes y recibir reseñas.
-    </p>
-  </section>
+        <section>
+          <h2>Explorar</h2>
+          <ul>
+            <li>
+              <a href="/servicios">Explorar servicios</a>
+            </li>
+            <li>
+              <a href="/proveedores">Ver listado de proveedores</a>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>¿Cómo funciona?</h2>
+          <p>
+            1) Como visitante o solicitante, podés navegar por servicios y proveedores,
+            filtrar por categoría y zona, y contactar por WhatsApp o correo.
+          </p>
+          <p>
+            2) Como proveedor, podés registrarte, completar tu perfil, crear servicios,
+            registrar acuerdos con clientes y recibir reseñas.
+          </p>
+        </section>
 </body>
+
 </html>

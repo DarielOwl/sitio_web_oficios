@@ -34,20 +34,31 @@ router.post(
 );
 
 // ---------- ACUERDOS DESDE VISTA ----------
-router.get('/:id/acuerdos/nuevo', providerViewController.showNewAgreementForm);
-router.post('/:id/acuerdos', providerViewController.createAgreementFromView);
+router.get(
+  '/:id/acuerdos/nuevo',
+  requireAuth,
+  providerViewController.showNewAgreementForm
+);
+router.post(
+  '/:id/acuerdos',
+  requireAuth,
+  providerViewController.createAgreementFromView
+);
 router.post(
   '/:id/acuerdos/:agreementId/cumplir',
+  requireAuth,
   providerViewController.markAgreementAsCompleted
 );
 
 // ---------- RESEÑAS DESDE VISTA ----------
 router.get(
   '/:id/acuerdos/:agreementId/resenas/nueva',
+  requireAuth,
   providerViewController.showNewReviewForm
 );
 router.post(
   '/:id/acuerdos/:agreementId/resenas',
+  requireAuth,
   providerViewController.createReviewFromView
 );
 

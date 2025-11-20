@@ -56,6 +56,14 @@ async function showProviderDetail(req, res) {
 async function showNewAgreementForm(req, res) {
   try {
     const { id } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.role !== 'client') {
+      return res
+        .status(403)
+        .send('Solo los clientes registrados pueden crear acuerdos');
+    }
+
     const provider = await providerService.getProviderById(id);
     const services = await serviceService.getAllServices({ providerId: id });
 
@@ -79,6 +87,14 @@ async function showNewAgreementForm(req, res) {
 async function createAgreementFromView(req, res) {
   try {
     const { id } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.role !== 'client') {
+      return res
+        .status(403)
+        .send('Solo los clientes registrados pueden crear acuerdos');
+    }
+
     const {
       serviceId,
       clientName,
@@ -132,6 +148,13 @@ async function markAgreementAsCompleted(req, res) {
   try {
     const { id: providerId, agreementId } = req.params;
 
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.role !== 'client') {
+      return res
+        .status(403)
+        .send('Solo los clientes registrados pueden marcar acuerdos como cumplidos');
+    }
+
     await agreementService.updateAgreementStatus(agreementId, 'cumplido');
 
     return res.redirect(`/proveedores/${providerId}`);
@@ -147,6 +170,13 @@ async function markAgreementAsCompleted(req, res) {
 async function showNewReviewForm(req, res) {
   try {
     const { id: providerId, agreementId } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.role !== 'client') {
+      return res
+        .status(403)
+        .send('Solo los clientes registrados pueden crear reseñas');
+    }
 
     const provider = await providerService.getProviderById(providerId);
     const agreement = await agreementService.getAgreementById(agreementId);
@@ -175,6 +205,14 @@ async function showNewReviewForm(req, res) {
 async function createReviewFromView(req, res) {
   try {
     const { id: providerId, agreementId } = req.params;
+
+    const currentUser = res.locals.currentUser;
+    if (!currentUser || currentUser.role !== 'client') {
+      return res
+        .status(403)
+        .send('Solo los clientes registrados pueden crear reseñas');
+    }
+
     const { rating, authorName, comment } = req.body || {};
 
     const data = {
@@ -452,9 +490,9 @@ async function updateProviderFromView(req, res) {
     const categoriesArray =
       categories && categories.trim().length > 0
         ? categories
-            .split(',')
-            .map((c) => c.trim())
-            .filter((c) => c.length > 0)
+          .split(',')
+          .map((c) => c.trim())
+          .filter((c) => c.length > 0)
         : [];
 
     const data = {

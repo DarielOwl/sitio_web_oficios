@@ -42,8 +42,8 @@ function verifyPassword(password, storedHash) {
   );
 }
 
-// Registrar usuario nuevo
-async function registerUser({ name, email, password }) {
+// Registrar usuario nuevo (provider o client)
+async function registerUser({ name, email, password, role = 'provider' }) {
   const errors = [];
 
   if (!email || typeof email !== 'string' || email.trim().length === 0) {
@@ -52,6 +52,11 @@ async function registerUser({ name, email, password }) {
 
   if (!password || typeof password !== 'string' || password.length < 6) {
     errors.push('Field "password" is required and must have at least 6 characters');
+  }
+
+  const allowedRoles = ['provider', 'client'];
+  if (!allowedRoles.includes(role)) {
+    errors.push('Field "role" must be "provider" or "client"');
   }
 
   if (errors.length > 0) {
@@ -71,22 +76,28 @@ async function registerUser({ name, email, password }) {
 
   const passwordHash = hashPassword(password);
 
-  // Crear proveedor básico asociado a este usuario, ahora en Mongo
-  const provider = await providerService.createProvider({
-    name: name || normalizedEmail,
-    description: '',
-    experienceYears: null,
-    zone: '',
-    categories: [],
-    whatsapp: '',
-    email: normalizedEmail
-  });
+  let providerId = null;
+
+  if (role === 'provider') {
+    const provider = await providerService.createProvider({
+      name: name || normalizedEmail,
+      description: '',
+      experienceYears: null,
+      zone: '',
+      categories: [],
+      whatsapp: '',
+      email: normalizedEmail
+    });
+
+    providerId = provider.id;
+  }
 
   const userDoc = await User.create({
     name,
     email: normalizedEmail,
     passwordHash,
-    providerId: provider.id // provider.id es string del ObjectId
+    role,
+    providerId
   });
 
   return mapUser(userDoc);
