@@ -1,83 +1,113 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('../partials/header', { title: 'Nuevo acuerdo' }) %>
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Nuevo acuerdo - <%= provider.name %>
-    </title>
-</head>
+<h1 class="page-title">Nuevo acuerdo con <%= provider.name %></h1>
+<p class="page-subtitle">
+  Registrá un acuerdo para darle seguimiento y luego dejar una reseña.
+</p>
 
-<body>
-    <h1>Nuevo acuerdo con <%= provider.name %>
-    </h1>
+<div class="card form-card">
+  <% if (errorMessage) { %>
+    <div class="alert-error"><%= errorMessage %></div>
+  <% } %>
 
-    <% if (errorMessage) { %>
-        <p style="color: red;"><strong>
-                <%= errorMessage %>
-            </strong></p>
-        <% } %>
+  <form action="/proveedores/<%= provider.id %>/acuerdos" method="POST">
+    <div class="form-group">
+      <label for="clientName" class="form-label">Tu nombre</label>
+      <input
+        type="text"
+        id="clientName"
+        name="clientName"
+        class="form-input"
+        required
+      />
+    </div>
 
-            <form action="/proveedores/<%= provider.id %>/acuerdos" method="POST">
-                <p>
-                    <label for="clientName">Nombre del solicitante:</label><br />
-                    <input type="text" id="clientName" name="clientName" required />
-                </p>
+    <div class="form-group">
+      <label for="clientContact" class="form-label">Contacto (correo o teléfono)</label>
+      <input
+        type="text"
+        id="clientContact"
+        name="clientContact"
+        class="form-input"
+      />
+    </div>
 
-                <p>
-                    <label for="clientContact">Contacto del solicitante (correo o teléfono):</label><br />
-                    <input type="text" id="clientContact" name="clientContact" />
-                </p>
+    <div class="form-group">
+      <label for="serviceId" class="form-label">Servicio (opcional)</label>
+      <select id="serviceId" name="serviceId" class="form-select">
+        <option value="">-- Seleccionar servicio --</option>
+        <% services.forEach(function (s) { %>
+          <option value="<%= s.id %>"><%= s.title %></option>
+        <% }); %>
+      </select>
+    </div>
 
-                <p>
-                    <label for="serviceId">Servicio (opcional):</label><br />
-                    <select id="serviceId" name="serviceId">
-                        <option value="">-- Seleccionar servicio (opcional) --</option>
-                        <% if (services && services.length> 0) { %>
-                            <% services.forEach(function(service) { %>
-                                <option value="<%= service.id %>">
-                                    <%= service.title %>
-                                </option>
-                                <% }); %>
-                                    <% } %>
-                    </select>
-                </p>
+    <div class="form-group">
+      <label for="type" class="form-label">Tipo de acuerdo</label>
+      <select id="type" name="type" class="form-select">
+        <option value="">Seleccionar</option>
+        <option value="dinero">Dinero</option>
+        <option value="horas">Intercambio de horas</option>
+        <option value="mixto">Mixto</option>
+      </select>
+    </div>
 
-                <p>
-                    <label for="type">Tipo de acuerdo:</label><br />
-                    <select id="type" name="type" required>
-                        <option value="dinero">Dinero</option>
-                        <option value="horas">Horas</option>
-                        <option value="mixto">Mixto</option>
-                    </select>
-                </p>
+    <div class="form-group">
+      <label class="form-label">Monto en dinero (si aplica)</label>
+      <div style="display:flex;gap:8px;">
+        <input
+          type="number"
+          step="0.01"
+          name="moneyAmount"
+          class="form-input"
+          placeholder="Monto"
+          style="flex:1;"
+        />
+        <input
+          type="text"
+          name="moneyCurrency"
+          class="form-input"
+          placeholder="Moneda"
+          style="flex:1;"
+        />
+      </div>
+    </div>
 
-                <p>
-                    <label for="moneyAmount">Monto en dinero (si aplica):</label><br />
-                    <input type="number" id="moneyAmount" name="moneyAmount" step="0.01" />
-                    <input type="text" id="moneyCurrency" name="moneyCurrency" placeholder="ARS" />
-                </p>
+    <div class="form-group">
+      <label for="exchangeHours" class="form-label">Horas de intercambio (si aplica)</label>
+      <input
+        type="number"
+        step="0.5"
+        id="exchangeHours"
+        name="exchangeHours"
+        class="form-input"
+      />
+    </div>
 
-                <p>
-                    <label for="exchangeHours">Horas de intercambio (si aplica):</label><br />
-                    <input type="number" id="exchangeHours" name="exchangeHours" step="0.5" />
-                </p>
+    <div class="form-group">
+      <label for="estimatedDate" class="form-label">Fecha estimada (opcional)</label>
+      <input
+        type="date"
+        id="estimatedDate"
+        name="estimatedDate"
+        class="form-input"
+      />
+    </div>
 
-                <p>
-                    <label for="estimatedDate">Fecha estimada (opcional):</label><br />
-                    <input type="datetime-local" id="estimatedDate" name="estimatedDate" />
-                </p>
+    <div class="form-group">
+      <label for="description" class="form-label">Descripción breve del acuerdo</label>
+      <textarea
+        id="description"
+        name="description"
+        class="form-textarea"
+      ></textarea>
+    </div>
 
-                <p>
-                    <label for="description">Descripción breve del acuerdo:</label><br />
-                    <textarea id="description" name="description" rows="3"></textarea>
-                </p>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Crear acuerdo</button>
+      <a href="/proveedores/<%= provider.id %>" class="link-muted">Cancelar</a>
+    </div>
+  </form>
+</div>
 
-                <button type="submit">Crear acuerdo</button>
-            </form>
-
-            <p>
-                <a href="/proveedores/<%= provider.id %>">Volver al perfil del proveedor</a>
-            </p>
-</body>
-
-</html>
+<%- include('../partials/footer') %>

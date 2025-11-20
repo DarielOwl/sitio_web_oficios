@@ -1,53 +1,62 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('../partials/header', { title: 'Nueva reseña' }) %>
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Nueva reseña - <%= provider.name %>
-    </title>
-</head>
+<h1 class="page-title">Reseña para <%= provider.name %></h1>
+<p class="page-subtitle">
+  Contanos cómo fue tu experiencia con este acuerdo.
+</p>
 
-<body>
-    <h1>Nueva reseña para <%= provider.name %>
-    </h1>
+<div class="card form-card">
+  <% if (errorMessage) { %>
+    <div class="alert-error"><%= errorMessage %></div>
+  <% } %>
 
-    <p>
-        <strong>Acuerdo:</strong>
-        <% if (agreement.description) { %>
-            <%= agreement.description %>
-                <% } else { %>
-                    (Acuerdo sin descripción)
-                    <% } %>
-    </p>
+  <div class="alert-info">
+    Acuerdo con <strong><%= agreement.clientName %></strong>.
+    <% if (agreement.description) { %>
+      <br />
+      <span class="text-sm"><%= agreement.description %></span>
+    <% } %>
+  </div>
 
-    <% if (errorMessage) { %>
-        <p style="color: red;"><strong>
-                <%= errorMessage %>
-            </strong></p>
-        <% } %>
+  <form action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas" method="POST">
+    <div class="form-group">
+      <label for="rating" class="form-label">Calificación (1 a 5)</label>
+      <input
+        type="number"
+        id="rating"
+        name="rating"
+        min="1"
+        max="5"
+        class="form-input"
+        required
+      />
+    </div>
 
-            <form action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas" method="POST">
-                <p>
-                    <label for="rating">Calificación (1 a 5):</label><br />
-                    <input type="number" id="rating" name="rating" min="1" max="5" required />
-                </p>
+    <div class="form-group">
+      <label for="authorName" class="form-label">Tu nombre (opcional)</label>
+      <input
+        type="text"
+        id="authorName"
+        name="authorName"
+        class="form-input"
+      />
+    </div>
 
-                <p>
-                    <label for="authorName">Tu nombre (opcional):</label><br />
-                    <input type="text" id="authorName" name="authorName" />
-                </p>
+    <div class="form-group">
+      <label for="comment" class="form-label">Comentario</label>
+      <textarea
+        id="comment"
+        name="comment"
+        class="form-textarea"
+        required
+      ></textarea>
+    </div>
 
-                <p>
-                    <label for="comment">Comentario:</label><br />
-                    <textarea id="comment" name="comment" rows="4" required></textarea>
-                </p>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Publicar reseña</button>
+      <a href="/proveedores/<%= provider.id %>" class="link-muted">Cancelar</a>
+    </div>
+  </form>
+</div>
 
-                <button type="submit">Enviar reseña</button>
-            </form>
-
-            <p>
-                <a href="/proveedores/<%= provider.id %>">Volver al perfil del proveedor</a>
-            </p>
-</body>
-
-</html>
+<%- include('../partials/footer') %>
