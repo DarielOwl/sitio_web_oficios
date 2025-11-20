@@ -1,22 +1,34 @@
 // services/service.service.js
 
-const ServiceModel = require('../models/service.model');
+const Service = require('../models/service.model');
 const providerService = require('../services/provider.service');
 
+function mapService(doc) {
+  if (!doc) return null;
+  const obj = doc.toObject ? doc.toObject() : doc;
+  obj.id = obj._id.toString();
+  if (obj.providerId) {
+    obj.providerId = obj.providerId.toString();
+  }
+  return obj;
+}
+
+// Obtener servicios (con filtros opcionales)
 async function getAllServices(filter = {}) {
   const { providerId, category, zone } = filter;
 
-  let services;
+  const query = {};
 
   if (providerId) {
-    services = ServiceModel.getServicesByProviderId(providerId);
-  } else {
-    services = ServiceModel.getAllServices();
+    query.providerId = providerId;
   }
 
   if (category) {
-    services = services.filter((s) => s.category === category);
+    query.category = category;
   }
+
+  let services = await Service.find(query).exec();
+  let result = services.map(mapService);
 
   if (zone) {
     const providers = await providerService.getAllProviders();
@@ -24,27 +36,30 @@ async function getAllServices(filter = {}) {
       .filter((p) => p.zone === zone)
       .map((p) => p.id);
 
-    services = services.filter((s) => providerIdsInZone.includes(s.providerId));
+    result = result.filter((s) => providerIdsInZone.includes(s.providerId));
   }
 
-  return services;
+  return result;
 }
 
-
-// Obtener un servicio por ID
+// Obtener servicio por ID
 async function getServiceById(id) {
-  const service = ServiceModel.getServiceById(id);
-
-  if (!service) {
+  try {
+    const service = await Service.findById(id).exec();
+    if (!service) {
+      const error = new Error('Service not found');
+      error.statusCode = 404;
+      throw error;
+    }
+    return mapService(service);
+  } catch (err) {
     const error = new Error('Service not found');
     error.statusCode = 404;
     throw error;
   }
-
-  return service;
 }
 
-// Crear un servicio
+// Crear servicio
 async function createService(data) {
   const errors = [];
 
@@ -52,19 +67,8 @@ async function createService(data) {
     errors.push('Field "providerId" is required');
   }
 
-  if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
-    errors.push('Field "title" is required and must be a non-empty string');
-  }
-
-  const hasMoney =
-    typeof data.priceAmount === 'number' && !Number.isNaN(data.priceAmount);
-  const hasHours =
-    typeof data.exchangeHours === 'number' && !Number.isNaN(data.exchangeHours);
-
-  if (!hasMoney && !hasHours) {
-    errors.push(
-      'At least one of "priceAmount" (dinero) or "exchangeHours" (horas) must be provided'
-    );
+  if (!data.title || typeof data.title !== 'string') {
+    errors.push('Field "title" is required and must be a string');
   }
 
   if (errors.length > 0) {
@@ -73,77 +77,62 @@ async function createService(data) {
     throw error;
   }
 
-  // Verificar que exista el proveedor
-  const provider = ProviderModel.getProviderById(data.providerId);
-  if (!provider) {
-    const error = new Error('Provider not found for given providerId');
-    error.statusCode = 404;
-    throw error;
-  }
-
-  const newService = ServiceModel.createService({
+  const service = await Service.create({
     providerId: data.providerId,
     title: data.title,
-    description: data.description,
-    category: data.category,
-    priceAmount: hasMoney ? data.priceAmount : null,
-    priceCurrency: hasMoney ? data.priceCurrency || 'ARS' : null,
-    exchangeHours: hasHours ? data.exchangeHours : null,
-    exchangeUnit: hasHours ? data.exchangeUnit || 'horas' : null
+    description: data.description || '',
+    category: data.category || '',
+    priceAmount:
+      data.priceAmount === '' || data.priceAmount === undefined
+        ? null
+        : Number(data.priceAmount),
+    priceCurrency: data.priceCurrency || '',
+    exchangeHours:
+      data.exchangeHours === '' || data.exchangeHours === undefined
+        ? null
+        : Number(data.exchangeHours),
+    exchangeUnit: data.exchangeUnit || ''
   });
 
-  return newService;
+  return mapService(service);
 }
 
-// Actualizar un servicio
+// Actualizar servicio
 async function updateService(id, data) {
-  // Si cambian el providerId, verificar que el proveedor exista
-  if (data.providerId) {
-    const provider = ProviderModel.getProviderById(data.providerId);
-    if (!provider) {
-      const error = new Error('Provider not found for given providerId');
-      error.statusCode = 404;
-      throw error;
-    }
-  }
+  const update = {
+    title: data.title,
+    description: data.description || '',
+    category: data.category || '',
+    priceAmount:
+      data.priceAmount === '' || data.priceAmount === undefined
+        ? null
+        : Number(data.priceAmount),
+    priceCurrency: data.priceCurrency || '',
+    exchangeHours:
+      data.exchangeHours === '' || data.exchangeHours === undefined
+        ? null
+        : Number(data.exchangeHours),
+    exchangeUnit: data.exchangeUnit || ''
+  };
 
-  // Validación básica opcional: si mandan priceAmount/exchangeHours, chequear coherencia
-  const hasMoney =
-    data.priceAmount !== undefined &&
-    typeof data.priceAmount === 'number' &&
-    !Number.isNaN(data.priceAmount);
+  const updated = await Service.findByIdAndUpdate(
+    id,
+    { $set: update },
+    { new: true, runValidators: true }
+  ).exec();
 
-  const hasHours =
-    data.exchangeHours !== undefined &&
-    typeof data.exchangeHours === 'number' &&
-    !Number.isNaN(data.exchangeHours);
-
-  if (data.priceAmount !== undefined && !hasMoney) {
-    const error = new Error('"priceAmount" must be a valid number');
-    error.statusCode = 400;
-    throw error;
-  }
-
-  if (data.exchangeHours !== undefined && !hasHours) {
-    const error = new Error('"exchangeHours" must be a valid number');
-    error.statusCode = 400;
-    throw error;
-  }
-
-  const updatedService = ServiceModel.updateService(id, data);
-
-  if (!updatedService) {
+  if (!updated) {
     const error = new Error('Service not found');
     error.statusCode = 404;
     throw error;
   }
 
-  return updatedService;
+  return mapService(updated);
 }
 
-// Eliminar un servicio
+// Eliminar servicio
 async function deleteService(id) {
-  const deleted = ServiceModel.deleteService(id);
+  const deleted = await Service.findByIdAndDelete(id).exec();
 
   if (!deleted) {
     const error = new Error('Service not found');
