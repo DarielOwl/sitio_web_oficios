@@ -1,0 +1,11 @@
+[
+  {
+    "id": "1",
+    "name": "Henry",
+    "email": "henryferreira133@gmail.com",
+    "passwordHash": "65f7233152a05cb7506fdcc9b4bd2334:8417648d6b7d0c1da75e50b1c38a56ba57853ce162bea791210f26776b2428ea",
+    "providerId": null,
+    "createdAt": "2025-11-20T00:24:26.285Z",
+    "updatedAt": "2025-11-20T00:24:26.285Z"
+  }
+]

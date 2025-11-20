@@ -1,24 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Proveedores</title>
 </head>
-<body>
-  <h1>Listado de proveedores</h1>
 
-  <% if (providers && providers.length > 0) { %>
-    <ul>
-      <% providers.forEach(function (provider) { %>
-        <li>
-          <a href="/proveedores/<%= provider.id %>">
-            <strong><%= provider.name %></strong>
-          </a>
-          <% if (provider.zone) { %>
-            - <span><%= provider.zone %></span>
-          <% } %>
-          <% if (provider.categories && provider.categories.length > 0) { %>
-            - <span>Categorías: <%= provider.categories.join(', ') %></span>
+<body>
+  <% if (currentUser) { %>
+    <p>
+      Sesión iniciada como <strong>
+        <%= currentUser.email %>
+      </strong>
+    <form action="/auth/logout" method="POST" style="display: inline;">
+      <button type="submit">Cerrar sesión</button>
+    </form>
+    </p>
+    <% } else { %>
+      <p>
+        <a href="/auth/login">Iniciar sesión</a> |
+        <a href="/auth/register">Registrarse</a>
+      </p>
+      <% } %>
+
+
+        <h1>Listado de proveedores</h1>
+
+
+        <% if (providers && providers.length> 0) { %>
+          <ul>
+            <% providers.forEach(function (provider) { %>
+              <li>
+                <a href="/proveedores/<%= provider.id %>">
+                  <strong>
+                    <%= provider.name %>
+                  </strong>
+                </a>
+                <% if (provider.zone) { %>
+                  - <span>
+                    <%= provider.zone %>
+                  </span>
+                  <% } %>
+                    <% if (provider.categories && provider.categories.length> 0) { %>
+                      - <span>Categorías: <%= provider.categories.join(', ') %></span>
           <% } %>
         </li>
       <% }); %>

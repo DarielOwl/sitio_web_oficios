@@ -1,77 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Crear cuenta</title>
-  <link rel="stylesheet" href="/css/output.css">
-</head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center">
-  <div class="bg-white shadow-lg rounded-xl px-8 py-8 w-full max-w-md">
-    <h1 class="text-2xl font-semibold mb-6 text-center">Crear cuenta</h1>
 
-    <% if (error) { %>
-      <div class="bg-red-100 text-red-700 text-sm p-3 rounded mb-4">
-        <%= error %>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro</title>
+</head>
+
+<body>
+  <h1>Registro de proveedor</h1>
+
+  <% if (errorMessage) { %>
+    <p style="color: red;"><strong>
+        <%= errorMessage %>
+      </strong></p>
     <% } %>
 
-    <form action="/auth/register" method="POST" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium mb-1">Nombre</label>
-        <input
-          type="text"
-          name="nombre"
-          required
-          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <form action="/auth/register" method="POST">
+        <p>
+          <label for="name">Nombre:</label><br />
+          <input type="text" id="name" name="name" />
+        </p>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Email</label>
-        <input
-          type="email"
-          name="email"
-          required
-          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+        <p>
+          <label for="email">Correo electrónico:</label><br />
+          <input type="email" id="email" name="email" required />
+        </p>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Contraseña</label>
-        <input
-          type="password"
-          name="password"
-          required
-          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+        <p>
+          <label for="password">Contraseña:</label><br />
+          <input type="password" id="password" name="password" minlength="6" required />
+        </p>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Rol</label>
-        <select
-          name="rol"
-          class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="solicitante">Solicitante (cliente)</option>
-          <option value="proveedor">Proveedor</option>
-        </select>
-      </div>
+        <button type="submit">Registrarse</button>
+      </form>
 
-      <button
-        type="submit"
-        class="w-full bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-      >
-        Registrarme
-      </button>
-    </form>
-
-    <p class="mt-4 text-center text-sm text-slate-600">
-      ¿Ya tienes cuenta?
-      <a href="/auth/login" class="text-blue-600 hover:underline">
-        Inicia sesión
-      </a>
-    </p>
-  </div>
+      <p>
+        ¿Ya tenés cuenta?
+        <a href="/auth/login">Iniciar sesión</a>
+      </p>
 </body>
+
 </html>
