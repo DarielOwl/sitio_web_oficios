@@ -1,8 +1,18 @@
 // services/user.service.js
 
 const crypto = require('crypto');
-const UserModel = require('../models/user.model');
+const User = require('../models/user.model');
 const providerService = require('../services/provider.service');
+
+function mapUser(doc) {
+  if (!doc) return null;
+  const obj = doc.toObject ? doc.toObject() : doc;
+  obj.id = obj._id.toString();
+  if (obj.providerId) {
+    obj.providerId = obj.providerId.toString();
+  }
+  return obj;
+}
 
 // Hash de contraseña con pbkdf2
 function hashPassword(password) {
@@ -50,10 +60,12 @@ async function registerUser({ name, email, password }) {
     throw error;
   }
 
-  const existing = UserModel.getUserByEmail(email);
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const existing = await User.findOne({ email: normalizedEmail }).exec();
   if (existing) {
     const error = new Error('Email is already in use');
-    error.statusCode = 409; // conflicto
+    error.statusCode = 409;
     throw error;
   }
 
@@ -61,23 +73,23 @@ async function registerUser({ name, email, password }) {
 
   // Crear proveedor básico asociado a este usuario, ahora en Mongo
   const provider = await providerService.createProvider({
-    name: name || email,
+    name: name || normalizedEmail,
     description: '',
     experienceYears: null,
     zone: '',
     categories: [],
     whatsapp: '',
-    email
+    email: normalizedEmail
   });
 
-  const newUser = UserModel.createUser({
+  const userDoc = await User.create({
     name,
-    email,
+    email: normalizedEmail,
     passwordHash,
-    providerId: provider.id // id de Mongo en string
+    providerId: provider.id // provider.id es string del ObjectId
   });
 
-  return newUser;
+  return mapUser(userDoc);
 }
 
 // Autenticar usuario (login)
@@ -88,41 +100,43 @@ async function authenticateUser(email, password) {
     throw error;
   }
 
-  const user = UserModel.getUserByEmail(email);
+  const normalizedEmail = email.trim().toLowerCase();
+  const userDoc = await User.findOne({ email: normalizedEmail }).exec();
 
   const invalidError = new Error('Invalid email or password');
   invalidError.statusCode = 401;
 
-  if (!user) {
+  if (!userDoc) {
     throw invalidError;
   }
 
-  const isValid = verifyPassword(password, user.passwordHash);
+  const isValid = verifyPassword(password, userDoc.passwordHash);
   if (!isValid) {
     throw invalidError;
   }
 
-  return user;
+  return mapUser(userDoc);
 }
 
 async function getUserById(id) {
-  const user = UserModel.getUserById(id);
-  if (!user) {
+  const userDoc = await User.findById(id).exec();
+  if (!userDoc) {
     const error = new Error('User not found');
     error.statusCode = 404;
     throw error;
   }
-  return user;
+  return mapUser(userDoc);
 }
 
 async function getUserByEmail(email) {
-  const user = UserModel.getUserByEmail(email);
-  if (!user) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const userDoc = await User.findOne({ email: normalizedEmail }).exec();
+  if (!userDoc) {
     const error = new Error('User not found');
     error.statusCode = 404;
     throw error;
   }
-  return user;
+  return mapUser(userDoc);
 }
 
 module.exports = {
