@@ -1,41 +1,63 @@
 // services/agreement.service.js
 
-const AgreementModel = require('../models/agreement.model');
-const ProviderModel = require('../models/provider.model');
-const ServiceModel = require('../models/service.model');
+const Agreement = require('../models/agreement.model');
 
-// Listar acuerdos (opcionalmente filtrados)
+function mapAgreement(doc) {
+  if (!doc) return null;
+  const obj = doc.toObject ? doc.toObject() : doc;
+
+  obj.id = obj._id.toString();
+
+  if (obj.providerId) {
+    obj.providerId = obj.providerId.toString();
+  }
+
+  if (obj.serviceId) {
+    obj.serviceId = obj.serviceId.toString();
+  }
+
+  return obj;
+}
+
+// Obtener acuerdos (con filtros opcionales)
 async function getAllAgreements(filter = {}) {
   const { providerId, serviceId, status } = filter;
 
-  let agreements;
+  const query = {};
 
   if (providerId) {
-    agreements = AgreementModel.getAgreementsByProviderId(providerId);
-  } else if (serviceId) {
-    agreements = AgreementModel.getAgreementsByServiceId(serviceId);
-  } else {
-    agreements = AgreementModel.getAllAgreements();
+    query.providerId = providerId;
+  }
+
+  if (serviceId) {
+    query.serviceId = serviceId;
   }
 
   if (status) {
-    agreements = agreements.filter((a) => a.status === status);
+    query.status = status;
   }
 
-  return agreements;
+  const agreements = await Agreement.find(query).exec();
+  return agreements.map(mapAgreement);
 }
 
-// Obtener un acuerdo por ID
+// Obtener acuerdo por ID
 async function getAgreementById(id) {
-  const agreement = AgreementModel.getAgreementById(id);
+  try {
+    const agreement = await Agreement.findById(id).exec();
 
-  if (!agreement) {
+    if (!agreement) {
+      const error = new Error('Agreement not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return mapAgreement(agreement);
+  } catch (err) {
     const error = new Error('Agreement not found');
     error.statusCode = 404;
     throw error;
   }
-
-  return agreement;
 }
 
 // Crear acuerdo
@@ -46,33 +68,8 @@ async function createAgreement(data) {
     errors.push('Field "providerId" is required');
   }
 
-  if (!data.clientName || typeof data.clientName !== 'string' || data.clientName.trim().length === 0) {
-    errors.push('Field "clientName" is required and must be a non-empty string');
-  }
-
-  const type = data.type || 'dinero';
-  const validTypes = ['dinero', 'horas', 'mixto'];
-
-  if (!validTypes.includes(type)) {
-    errors.push('Field "type" must be one of: dinero, horas, mixto');
-  }
-
-  const hasMoney =
-    typeof data.moneyAmount === 'number' && !Number.isNaN(data.moneyAmount);
-
-  const hasHours =
-    typeof data.exchangeHours === 'number' && !Number.isNaN(data.exchangeHours);
-
-  if (type === 'dinero' && !hasMoney) {
-    errors.push('For type "dinero", "moneyAmount" must be provided as a number');
-  }
-
-  if (type === 'horas' && !hasHours) {
-    errors.push('For type "horas", "exchangeHours" must be provided as a number');
-  }
-
-  if (type === 'mixto' && !hasMoney && !hasHours) {
-    errors.push('For type "mixto", at least one of "moneyAmount" or "exchangeHours" must be provided');
+  if (!data.clientName) {
+    errors.push('Field "clientName" is required');
   }
 
   if (errors.length > 0) {
@@ -81,140 +78,84 @@ async function createAgreement(data) {
     throw error;
   }
 
-  // Verificar proveedor
-  const provider = ProviderModel.getProviderById(data.providerId);
-  if (!provider) {
-    const error = new Error('Provider not found for given providerId');
-    error.statusCode = 404;
-    throw error;
-  }
-
-  // Verificar servicio si se envía serviceId
-  if (data.serviceId) {
-    const service = ServiceModel.getServiceById(data.serviceId);
-    if (!service) {
-      const error = new Error('Service not found for given serviceId');
-      error.statusCode = 404;
-      throw error;
-    }
-
-    // Extra: aseguramos que el servicio pertenezca al mismo proveedor
-    if (service.providerId !== data.providerId) {
-      const error = new Error('Service does not belong to the given providerId');
-      error.statusCode = 400;
-      throw error;
-    }
-  }
-
-  const newAgreement = AgreementModel.createAgreement({
+  const agreement = await Agreement.create({
     providerId: data.providerId,
     serviceId: data.serviceId || null,
     clientName: data.clientName,
-    clientContact: data.clientContact,
-    type,
-    moneyAmount: hasMoney ? data.moneyAmount : null,
-    moneyCurrency: hasMoney ? data.moneyCurrency || 'ARS' : null,
-    exchangeHours: hasHours ? data.exchangeHours : null,
-    description: data.description,
-    estimatedDate: data.estimatedDate,
+    clientContact: data.clientContact || '',
+    type: data.type || '',
+    moneyAmount:
+      data.moneyAmount === '' || data.moneyAmount === undefined
+        ? null
+        : Number(data.moneyAmount),
+    moneyCurrency: data.moneyCurrency || '',
+    exchangeHours:
+      data.exchangeHours === '' || data.exchangeHours === undefined
+        ? null
+        : Number(data.exchangeHours),
+    description: data.description || '',
+    estimatedDate: data.estimatedDate ? new Date(data.estimatedDate) : null,
     status: data.status || 'pendiente'
   });
 
-  return newAgreement;
+  return mapAgreement(agreement);
 }
 
-// Actualizar acuerdo
+// Actualizar acuerdo completo
 async function updateAgreement(id, data) {
-  // Si cambian providerId, verificamos que exista
-  if (data.providerId) {
-    const provider = ProviderModel.getProviderById(data.providerId);
-    if (!provider) {
-      const error = new Error('Provider not found for given providerId');
-      error.statusCode = 404;
-      throw error;
-    }
-  }
+  const update = {
+    serviceId: data.serviceId || null,
+    clientName: data.clientName,
+    clientContact: data.clientContact || '',
+    type: data.type || '',
+    moneyAmount:
+      data.moneyAmount === '' || data.moneyAmount === undefined
+        ? null
+        : Number(data.moneyAmount),
+    moneyCurrency: data.moneyCurrency || '',
+    exchangeHours:
+      data.exchangeHours === '' || data.exchangeHours === undefined
+        ? null
+        : Number(data.exchangeHours),
+    description: data.description || '',
+    estimatedDate: data.estimatedDate ? new Date(data.estimatedDate) : null
+  };
 
-  // Si cambian serviceId, verificamos que exista
-  if (data.serviceId) {
-    const service = ServiceModel.getServiceById(data.serviceId);
-    if (!service) {
-      const error = new Error('Service not found for given serviceId');
-      error.statusCode = 404;
-      throw error;
-    }
+  const updated = await Agreement.findByIdAndUpdate(
+    id,
+    { $set: update },
+    { new: true, runValidators: true }
+  ).exec();
 
-    if (data.providerId && service.providerId !== data.providerId) {
-      const error = new Error('Service does not belong to the given providerId');
-      error.statusCode = 400;
-      throw error;
-    }
-  }
-
-  // Validaciones suaves sobre type / amounts si vienen
-  if (data.type) {
-    const validTypes = ['dinero', 'horas', 'mixto'];
-    if (!validTypes.includes(data.type)) {
-      const error = new Error('Field "type" must be one of: dinero, horas, mixto');
-      error.statusCode = 400;
-      throw error;
-    }
-  }
-
-  if (data.moneyAmount !== undefined) {
-    const isValid =
-      typeof data.moneyAmount === 'number' && !Number.isNaN(data.moneyAmount);
-    if (!isValid && data.moneyAmount !== null) {
-      const error = new Error('"moneyAmount" must be a valid number or null');
-      error.statusCode = 400;
-      throw error;
-    }
-  }
-
-  if (data.exchangeHours !== undefined) {
-    const isValid =
-      typeof data.exchangeHours === 'number' && !Number.isNaN(data.exchangeHours);
-    if (!isValid && data.exchangeHours !== null) {
-      const error = new Error('"exchangeHours" must be a valid number or null');
-      error.statusCode = 400;
-      throw error;
-    }
-  }
-
-  const updatedAgreement = AgreementModel.updateAgreement(id, data);
-
-  if (!updatedAgreement) {
+  if (!updated) {
     const error = new Error('Agreement not found');
     error.statusCode = 404;
     throw error;
   }
 
-  return updatedAgreement;
+  return mapAgreement(updated);
 }
 
-// Cambiar solo el estado del acuerdo (pendiente/cumplido/cancelado)
+// Actualizar solo el estado
 async function updateAgreementStatus(id, status) {
-  const validStatuses = ['pendiente', 'cumplido', 'cancelado'];
-  if (!validStatuses.includes(status)) {
-    const error = new Error('Invalid status. Must be one of: pendiente, cumplido, cancelado');
-    error.statusCode = 400;
-    throw error;
-  }
+  const updated = await Agreement.findByIdAndUpdate(
+    id,
+    { $set: { status } },
+    { new: true, runValidators: true }
+  ).exec();
 
-  const updatedAgreement = AgreementModel.updateAgreement(id, { status });
-
-  if (!updatedAgreement) {
+  if (!updated) {
     const error = new Error('Agreement not found');
     error.statusCode = 404;
     throw error;
   }
 
-  return updatedAgreement;
+  return mapAgreement(updated);
 }
 
 // Eliminar acuerdo
 async function deleteAgreement(id) {
-  const deleted = AgreementModel.deleteAgreement(id);
+  const deleted = await Agreement.findByIdAndDelete(id).exec();
 
   if (!deleted) {
     const error = new Error('Agreement not found');
