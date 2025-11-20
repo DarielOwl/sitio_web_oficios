@@ -1,54 +1,88 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('../partials/header', { title: 'Proveedores' }) %>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Proveedores</title>
-</head>
+<h1 class="page-title">Proveedores</h1>
+<p class="page-subtitle">
+  Explorá oficios disponibles y entrá al perfil para ver servicios, acuerdos y reseñas.
+</p>
 
-<body>
-  <% if (currentUser) { %>
-    <p>
-      Sesión iniciada como <strong>
-        <%= currentUser.email %>
-      </strong>
-    <form action="/auth/logout" method="POST" style="display: inline;">
-      <button type="submit">Cerrar sesión</button>
-    </form>
-    </p>
-    <% } else { %>
-      <p>
-        <a href="/auth/login">Iniciar sesión</a> |
-        <a href="/auth/register">Registrarse</a>
-      </p>
-      <% } %>
+<% if (currentUser && currentUser.role === 'provider' && currentUser.providerId) { %>
+  <p class="text-sm" style="margin-bottom:16px;">
+    <a href="/proveedores/<%= currentUser.providerId %>" class="link-muted">
+      Ir a mi perfil de proveedor
+    </a>
+  </p>
+<% } %>
 
+<% if (providers && providers.length > 0) { %>
+  <div class="card">
+    <ul class="list-clean">
+      <% providers.forEach(function (provider) { %>
+        <li class="list-item">
+          <div class="text-sm">
+            <strong>
+              <a
+                href="/proveedores/<%= provider.id %>"
+                class="link-muted"
+                style="font-size:1rem;text-decoration:none;"
+              >
+                <%= provider.name %>
+              </a>
+            </strong>
+          </div>
 
-        <h1>Listado de proveedores</h1>
-
-
-        <% if (providers && providers.length> 0) { %>
-          <ul>
-            <% providers.forEach(function (provider) { %>
-              <li>
-                <a href="/proveedores/<%= provider.id %>">
-                  <strong>
-                    <%= provider.name %>
-                  </strong>
-                </a>
-                <% if (provider.zone) { %>
-                  - <span>
-                    <%= provider.zone %>
-                  </span>
-                  <% } %>
-                    <% if (provider.categories && provider.categories.length> 0) { %>
-                      - <span>Categorías: <%= provider.categories.join(', ') %></span>
+          <% if (provider.description) { %>
+            <div class="text-sm" style="margin-top:4px;">
+              <%= provider.description %>
+            </div>
           <% } %>
+
+          <div class="meta-row" style="margin-top:6px;">
+            <% if (provider.zone) { %>
+              <span class="meta-item">Zona: <strong><%= provider.zone %></strong></span>
+            <% } %>
+
+            <% if (provider.experienceYears) { %>
+              <span class="meta-item">
+                Experiencia: <%= provider.experienceYears %> años
+              </span>
+            <% } %>
+          </div>
+
+          <% if (provider.categories && provider.categories.length > 0) { %>
+            <div class="meta-row" style="margin-top:4px;">
+              <% provider.categories.slice(0, 3).forEach(function (cat) { %>
+                <span class="tag"><%= cat %></span>
+              <% }); %>
+            </div>
+          <% } %>
+
+          <div class="meta-row" style="margin-top:6px;">
+            <% if (provider.whatsapp) { %>
+              <a
+                href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>"
+                target="_blank"
+                class="link-muted"
+              >
+                WhatsApp
+              </a>
+            <% } %>
+
+            <% if (provider.email) { %>
+              <a href="mailto:<%= provider.email %>" class="link-muted" style="margin-left:12px;">
+                Correo
+              </a>
+            <% } %>
+          </div>
         </li>
       <% }); %>
     </ul>
-  <% } else { %>
-    <p>No hay proveedores disponibles.</p>
-  <% } %>
-</body>
-</html>
+  </div>
+<% } else { %>
+  <p class="text-sm">Todavía no hay proveedores cargados.</p>
+<% } %>
+
+<p class="text-sm" style="margin-top:16px;">
+  <a href="/" class="link-muted">Volver al inicio</a>
+</p>
+
+<%- include('../partials/footer') %>

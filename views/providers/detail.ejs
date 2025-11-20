@@ -1,233 +1,277 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Proveedor - <%= provider.name %></title>
-</head>
-<body>
-  <h1><%= provider.name %></h1>
+<%- include('../partials/header', { title: 'Proveedor - ' + provider.name }) %>
 
-  <% if (currentUser && currentUser.providerId === provider.id) { %>
-    <p>
-      <a href="/proveedores/<%= provider.id %>/editar">Editar perfil</a>
-    </p>
-  <% } %>
+<h1 class="page-title"><%= provider.name %></h1>
 
+<p class="page-subtitle">
   <% if (ratingSummary && ratingSummary.totalReviews > 0) { %>
-    <p>
-      <strong>Reputación:</strong>
-      <%= ratingSummary.averageRating.toFixed(1) %> / 5
-      (basado en <%= ratingSummary.totalReviews %> reseñas)
-    </p>
+    Reputación: <strong><%= ratingSummary.averageRating.toFixed(1) %> / 5</strong>
+    (basado en <%= ratingSummary.totalReviews %> reseñas)
   <% } else { %>
-    <p><strong>Reputación:</strong> Sin reseñas todavía.</p>
+    Sin reseñas todavía.
   <% } %>
+</p>
 
-  <% if (provider.description) { %>
-    <p><strong>Descripción:</strong> <%= provider.description %></p>
-  <% } %>
+<div class="provider-layout">
 
-  <% if (provider.experienceYears) { %>
-    <p><strong>Experiencia:</strong> <%= provider.experienceYears %> años</p>
-  <% } %>
+  <section class="card">
+    <h2 class="section-title">Información</h2>
 
-  <% if (provider.zone) { %>
-    <p><strong>Zona:</strong> <%= provider.zone %></p>
-  <% } %>
-
-  <% if (provider.categories && provider.categories.length > 0) { %>
-    <p><strong>Categorías:</strong> <%= provider.categories.join(', ') %></p>
-  <% } %>
-
-  <% if (currentUser && currentUser.role === 'client') { %>
-    <p>
-      <a href="/proveedores/<%= provider.id %>/acuerdos/nuevo">
-        Registrar nuevo acuerdo
-      </a>
-    </p>
-  <% } %>
-
-  <p>
-    <% if (provider.whatsapp) { %>
-      <strong>WhatsApp:</strong>
-      <a
-        href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>"
-        target="_blank"
-      >
-        Contactar por WhatsApp
-      </a>
-      <br />
+    <% if (provider.description) { %>
+      <p class="text-sm"><%= provider.description %></p>
     <% } %>
 
-    <% if (provider.email) { %>
-      <strong>Correo:</strong>
-      <a href="mailto:<%= provider.email %>">Contactar por correo</a>
+    <div class="meta-row">
+      <% if (provider.zone) { %>
+        <span class="meta-item">Zona: <strong><%= provider.zone %></strong></span>
+      <% } %>
+      <% if (provider.experienceYears) { %>
+        <span class="meta-item">Experiencia: <strong><%= provider.experienceYears %> años</strong></span>
+      <% } %>
+    </div>
+
+    <% if (provider.categories && provider.categories.length > 0) { %>
+      <div class="meta-row">
+        <% provider.categories.forEach(function (cat) { %>
+          <span class="tag"><%= cat %></span>
+        <% }); %>
+      </div>
     <% } %>
-  </p>
 
-  <hr />
+    <div style="margin-top:16px;">
+      <% if (provider.whatsapp) { %>
+        <a
+          href="https://wa.me/<%= provider.whatsapp.replace(/[^0-9]/g, '') %>"
+          target="_blank"
+          class="btn btn-primary"
+        >
+          Contactar por WhatsApp
+        </a>
+      <% } %>
 
-  <section>
-    <h2>Servicios del proveedor</h2>
+      <% if (provider.email) { %>
+        <a href="mailto:<%= provider.email %>" class="btn btn-ghost">
+          Contactar por correo
+        </a>
+      <% } %>
+    </div>
 
     <% if (currentUser && currentUser.providerId === provider.id) { %>
-      <p>
-        <a href="/proveedores/<%= provider.id %>/servicios/nuevo">
-          Agregar nuevo servicio
+      <div style="margin-top:12px;">
+        <a href="/proveedores/<%= provider.id %>/editar" class="link-muted">
+          Editar perfil
         </a>
-      </p>
+      </div>
     <% } %>
 
-    <% if (services && services.length > 0) { %>
-      <ul>
-        <% services.forEach(function (service) { %>
-          <li>
-            <strong><%= service.title %></strong><br />
-
-            <% if (service.description) { %>
-              <span><%= service.description %></span><br />
-            <% } %>
-
-            <% if (service.category) { %>
-              <span>Categoría: <%= service.category %></span><br />
-            <% } %>
-
-            <% if (service.priceAmount !== null) { %>
-              <span>
-                Precio: <%= service.priceAmount %> <%= service.priceCurrency || '' %>
-              </span><br />
-            <% } %>
-
-            <% if (service.exchangeHours !== null) { %>
-              <span>
-                Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || 'horas' %>
-              </span><br />
-            <% } %>
-
-            <% if (currentUser && currentUser.providerId === provider.id) { %>
-              <a href="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/editar">
-                Editar
-              </a>
-
-              <form
-                action="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/eliminar"
-                method="POST"
-                style="display: inline;"
-              >
-                <button type="submit" onclick="return confirm('¿Eliminar este servicio?');">
-                  Eliminar
-                </button>
-              </form>
-            <% } %>
-          </li>
-          <hr />
-        <% }); %>
-      </ul>
-    <% } else { %>
-      <p>Este proveedor aún no tiene servicios cargados.</p>
+    <% if (currentUser && currentUser.role === 'client') { %>
+      <div style="margin-top:16px;">
+        <a href="/proveedores/<%= provider.id %>/acuerdos/nuevo" class="btn btn-primary">
+          Registrar nuevo acuerdo
+        </a>
+      </div>
     <% } %>
   </section>
 
   <section>
-    <h2>Acuerdos registrados</h2>
+    <div class="card">
+      <h2 class="section-title">Servicios del proveedor</h2>
 
-    <% if (agreements && agreements.length > 0) { %>
-      <ul>
-        <% agreements.forEach(function (agreement) { %>
-          <li>
-            <strong>Solicitante:</strong> <%= agreement.clientName %><br />
+      <% if (currentUser && currentUser.providerId === provider.id) { %>
+        <p class="text-sm">
+          <a href="/proveedores/<%= provider.id %>/servicios/nuevo" class="btn btn-ghost">
+            Agregar nuevo servicio
+          </a>
+        </p>
+      <% } %>
 
-            <% if (agreement.type) { %>
-              <strong>Tipo:</strong> <%= agreement.type %><br />
-            <% } %>
+      <% if (services && services.length > 0) { %>
+        <ul class="list-clean">
+          <% services.forEach(function (service) { %>
+            <li class="list-item">
+              <div class="text-sm">
+                <strong><%= service.title %></strong>
+              </div>
 
-            <% if (agreement.moneyAmount !== null) { %>
-              <strong>Dinero:</strong>
-              <%= agreement.moneyAmount %> <%= agreement.moneyCurrency || '' %><br />
-            <% } %>
-
-            <% if (agreement.exchangeHours !== null) { %>
-              <strong>Horas:</strong> <%= agreement.exchangeHours %><br />
-            <% } %>
-
-            <% if (agreement.description) { %>
-              <strong>Descripción:</strong> <%= agreement.description %><br />
-            <% } %>
-
-            <% if (agreement.status) { %>
-              <strong>Estado:</strong> <%= agreement.status %><br />
-            <% } %>
-
-            <% if (agreement.estimatedDate) { %>
-              <small>
-                Fecha estimada:
-                <%= new Date(agreement.estimatedDate).toLocaleString('es-AR') %>
-              </small><br />
-            <% } %>
-
-            <% if (currentUser && currentUser.role === 'client') { %>
-              <% if (agreement.status !== 'cumplido') { %>
-                <form
-                  action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/cumplir"
-                  method="POST"
-                  style="display: inline;"
-                >
-                  <button type="submit">Marcar como cumplido</button>
-                </form>
-              <% } else { %>
-                <% if (!agreement.hasReview) { %>
-                  <a
-                    href="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas/nueva">
-                    Escribir reseña
-                  </a>
-                <% } else { %>
-                  <span>Reseña registrada.</span>
-                <% } %>
+              <% if (service.description) { %>
+                <div class="text-sm"><%= service.description %></div>
               <% } %>
-            <% } %>
-          </li>
-          <hr />
-        <% }); %>
-      </ul>
-    <% } else { %>
-      <p>No hay acuerdos registrados para este proveedor.</p>
-    <% } %>
+
+              <div class="meta-row">
+                <% if (service.category) { %>
+                  <span class="meta-item">Categoría: <%= service.category %></span>
+                <% } %>
+
+                <% if (service.priceAmount !== null) { %>
+                  <span class="meta-item">
+                    Precio: <%= service.priceAmount %> <%= service.priceCurrency || '' %>
+                  </span>
+                <% } %>
+
+                <% if (service.exchangeHours !== null) { %>
+                  <span class="meta-item">
+                    Intercambio: <%= service.exchangeHours %> <%= service.exchangeUnit || 'horas' %>
+                  </span>
+                <% } %>
+              </div>
+
+              <% if (currentUser && currentUser.providerId === provider.id) { %>
+                <div class="text-xs">
+                  <a
+                    href="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/editar"
+                    class="link-muted"
+                  >
+                    Editar
+                  </a>
+                  ·
+                  <form
+                    action="/proveedores/<%= provider.id %>/servicios/<%= service.id %>/eliminar"
+                    method="POST"
+                    style="display:inline;"
+                  >
+                    <button
+                      type="submit"
+                      class="link-muted"
+                      style="border:none;background:none;padding:0;cursor:pointer;"
+                      onclick="return confirm('¿Eliminar este servicio?');"
+                    >
+                      Eliminar
+                    </button>
+                  </form>
+                </div>
+              <% } %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p class="text-sm">Este proveedor aún no tiene servicios cargados.</p>
+      <% } %>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Acuerdos registrados</h2>
+
+      <% if (agreements && agreements.length > 0) { %>
+        <ul class="list-clean">
+          <% agreements.forEach(function (agreement) { %>
+            <li class="list-item">
+              <div class="text-sm">
+                <strong>Solicitante:</strong> <%= agreement.clientName %>
+              </div>
+
+              <% if (agreement.description) { %>
+                <div class="text-sm">
+                  <strong>Acuerdo:</strong> <%= agreement.description %>
+                </div>
+              <% } %>
+
+              <div class="meta-row">
+                <% if (agreement.type) { %>
+                  <span class="meta-item">Tipo: <%= agreement.type %></span>
+                <% } %>
+
+                <% if (agreement.moneyAmount !== null) { %>
+                  <span class="meta-item">
+                    Dinero: <%= agreement.moneyAmount %> <%= agreement.moneyCurrency || '' %>
+                  </span>
+                <% } %>
+
+                <% if (agreement.exchangeHours !== null) { %>
+                  <span class="meta-item">
+                    Horas: <%= agreement.exchangeHours %>
+                  </span>
+                <% } %>
+
+                <% if (agreement.status) { %>
+                  <span class="badge-status badge-status-<%= agreement.status %>">
+                    <%= agreement.status %>
+                  </span>
+                <% } %>
+              </div>
+
+              <% if (agreement.estimatedDate) { %>
+                <div class="text-xs">
+                  Fecha estimada:
+                  <%= new Date(agreement.estimatedDate).toLocaleString('es-AR') %>
+                </div>
+              <% } %>
+
+              <% if (currentUser && currentUser.role === 'client') { %>
+                <div class="text-xs" style="margin-top:8px;">
+                  <% if (agreement.status !== 'cumplido') { %>
+                    <form
+                      action="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/cumplir"
+                      method="POST"
+                      style="display:inline;"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-ghost"
+                        style="padding:4px 10px;font-size:0.8rem;"
+                      >
+                        Marcar como cumplido
+                      </button>
+                    </form>
+                  <% } else { %>
+                    <% if (!agreement.hasReview) { %>
+                      <a
+                        href="/proveedores/<%= provider.id %>/acuerdos/<%= agreement.id %>/resenas/nueva"
+                        class="btn btn-ghost"
+                        style="padding:4px 10px;font-size:0.8rem;"
+                      >
+                        Escribir reseña
+                      </a>
+                    <% } else { %>
+                      <span class="text-xs">Reseña registrada.</span>
+                    <% } %>
+                  <% } %>
+                </div>
+              <% } %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p class="text-sm">No hay acuerdos registrados para este proveedor.</p>
+      <% } %>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Reseñas</h2>
+
+      <% if (reviews && reviews.length > 0) { %>
+        <ul class="list-clean">
+          <% reviews.forEach(function (review) { %>
+            <li class="list-item">
+              <div class="meta-row">
+                <span class="meta-item">
+                  Calificación: <strong><%= review.rating %> / 5</strong>
+                </span>
+                <% if (review.authorName) { %>
+                  <span class="meta-item">Autor: <%= review.authorName %></span>
+                <% } %>
+              </div>
+
+              <% if (review.comment) { %>
+                <div class="text-sm"><%= review.comment %></div>
+              <% } %>
+
+              <% if (review.createdAt) { %>
+                <div class="text-xs">
+                  Fecha:
+                  <%= new Date(review.createdAt).toLocaleString('es-AR') %>
+                </div>
+              <% } %>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p class="text-sm">Este proveedor aún no tiene reseñas.</p>
+      <% } %>
+    </div>
   </section>
+</div>
 
-  <section>
-    <h2>Reseñas</h2>
+<p class="text-sm" style="margin-top:16px;">
+  <a href="/proveedores" class="link-muted">Volver al listado de proveedores</a>
+</p>
 
-    <% if (reviews && reviews.length > 0) { %>
-      <ul>
-        <% reviews.forEach(function (review) { %>
-          <li>
-            <strong>Calificación:</strong> <%= review.rating %> / 5<br />
-
-            <% if (review.authorName) { %>
-              <strong>Autor:</strong> <%= review.authorName %><br />
-            <% } %>
-
-            <% if (review.comment) { %>
-              <strong>Comentario:</strong> <%= review.comment %><br />
-            <% } %>
-
-            <% if (review.createdAt) { %>
-              <small>
-                Fecha:
-                <%= new Date(review.createdAt).toLocaleString('es-AR') %>
-              </small>
-            <% } %>
-          </li>
-          <hr />
-        <% }); %>
-      </ul>
-    <% } else { %>
-      <p>Este proveedor aún no tiene reseñas.</p>
-    <% } %>
-  </section>
-
-  <p>
-    <a href="/proveedores">Volver al listado de proveedores</a>
-  </p>
-</body>
-</html>
+<%- include('../partials/footer') %>

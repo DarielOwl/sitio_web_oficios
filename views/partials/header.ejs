@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= title || 'Sitio de oficios' %></title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <div class="main-layout">
+    <header class="site-header">
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+        <div>
+          <a href="/" class="brand" style="color:#f9fafb;text-decoration:none;">Oficios Locales</a>
+          <% if (currentUser) { %>
+            <div class="text-xs">
+              <%= currentUser.email %> (<%= currentUser.role === 'provider' ? 'Proveedor' : 'Cliente' %>)
+            </div>
+          <% } %>
+        </div>
+        <nav>
+          <a href="/servicios">Servicios</a>
+          <a href="/proveedores">Proveedores</a>
+          <% if (!currentUser) { %>
+            <a href="/auth/login">Ingresar</a>
+          <% } else { %>
+            <form action="/auth/logout" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-ghost" style="padding:4px 10px;font-size:0.8rem;">
+                Salir
+              </button>
+            </form>
+          <% } %>
+        </nav>
+      </div>
+    </header>
+    <main class="main-content">
+      <div class="container">
