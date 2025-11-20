@@ -1,35 +1,59 @@
 // services/review.service.js
 
-const ReviewModel = require('../models/review.model');
-const AgreementModel = require('../models/agreement.model');
-const ProviderModel = require('../models/provider.model');
+const Review = require('../models/review.model');
 
-// Listar reseñas (opcionalmente filtradas por providerId o agreementId)
+function mapReview(doc) {
+  if (!doc) return null;
+  const obj = doc.toObject ? doc.toObject() : doc;
+
+  obj.id = obj._id.toString();
+
+  if (obj.providerId) {
+    obj.providerId = obj.providerId.toString();
+  }
+
+  if (obj.agreementId) {
+    obj.agreementId = obj.agreementId.toString();
+  }
+
+  return obj;
+}
+
+// Obtener reseñas (con filtros opcionales)
 async function getAllReviews(filter = {}) {
   const { providerId, agreementId } = filter;
 
+  const query = {};
+
   if (providerId) {
-    return ReviewModel.getReviewsByProviderId(providerId);
+    query.providerId = providerId;
   }
 
   if (agreementId) {
-    return ReviewModel.getReviewsByAgreementId(agreementId);
+    query.agreementId = agreementId;
   }
 
-  return ReviewModel.getAllReviews();
+  const reviews = await Review.find(query).sort({ createdAt: -1 }).exec();
+  return reviews.map(mapReview);
 }
 
 // Obtener reseña por ID
 async function getReviewById(id) {
-  const review = ReviewModel.getReviewById(id);
+  try {
+    const review = await Review.findById(id).exec();
 
-  if (!review) {
+    if (!review) {
+      const error = new Error('Review not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return mapReview(review);
+  } catch (err) {
     const error = new Error('Review not found');
     error.statusCode = 404;
     throw error;
   }
-
-  return review;
 }
 
 // Crear reseña
@@ -40,16 +64,17 @@ async function createReview(data) {
     errors.push('Field "providerId" is required');
   }
 
-  if (!data.agreementId) {
-    errors.push('Field "agreementId" is required');
-  }
-
-  const rating = data.rating;
-  const ratingIsNumber =
-    typeof rating === 'number' && !Number.isNaN(rating);
-
-  if (!ratingIsNumber || rating < 1 || rating > 5) {
-    errors.push('Field "rating" must be a number between 1 and 5');
+  if (
+    data.rating === undefined ||
+    data.rating === null ||
+    Number.isNaN(Number(data.rating))
+  ) {
+    errors.push('Field "rating" is required and must be a number');
+  } else {
+    const r = Number(data.rating);
+    if (r < 1 || r > 5) {
+      errors.push('Field "rating" must be between 1 and 5');
+    }
   }
 
   if (errors.length > 0) {
@@ -58,92 +83,57 @@ async function createReview(data) {
     throw error;
   }
 
-  // Verificar proveedor
-  const provider = ProviderModel.getProviderById(data.providerId);
-  if (!provider) {
-    const error = new Error('Provider not found for given providerId');
-    error.statusCode = 404;
-    throw error;
-  }
-
-  // Verificar acuerdo
-  const agreement = AgreementModel.getAgreementById(data.agreementId);
-  if (!agreement) {
-    const error = new Error('Agreement not found for given agreementId');
-    error.statusCode = 404;
-    throw error;
-  }
-
-  // Chequear que el acuerdo pertenezca al proveedor
-  if (agreement.providerId !== data.providerId) {
-    const error = new Error('Agreement does not belong to the given providerId');
-    error.statusCode = 400;
-    throw error;
-  }
-
-  // Chequear que el acuerdo esté cumplido
-  if (agreement.status !== 'cumplido') {
-    const error = new Error('Agreement must be "cumplido" before creating a review');
-    error.statusCode = 400;
-    throw error;
-  }
-
-  // Chequear que no exista ya una reseña para este acuerdo
-  const existingReviewsForAgreement =
-    ReviewModel.getReviewsByAgreementId(data.agreementId);
-
-  if (existingReviewsForAgreement.length > 0) {
-    const error = new Error('There is already a review for this agreement');
-    error.statusCode = 400;
-    throw error;
-  }
-
-  const newReview = ReviewModel.createReview({
+  const review = await Review.create({
     providerId: data.providerId,
-    agreementId: data.agreementId,
-    rating,
-    authorName: data.authorName,
-    comment: data.comment
+    agreementId: data.agreementId || null,
+    rating: Number(data.rating),
+    authorName: data.authorName || '',
+    comment: data.comment || ''
   });
 
-  return newReview;
+  return mapReview(review);
 }
 
 // Actualizar reseña
 async function updateReview(id, data) {
-  // No permitimos cambiar providerId o agreementId aquí
-  if (data.providerId || data.agreementId) {
-    const error = new Error('Cannot change providerId or agreementId on a review');
-    error.statusCode = 400;
-    throw error;
-  }
+  const update = {};
 
   if (data.rating !== undefined) {
-    const rating = data.rating;
-    const ratingIsNumber =
-      typeof rating === 'number' && !Number.isNaN(rating);
-
-    if (!ratingIsNumber || rating < 1 || rating > 5) {
-      const error = new Error('Field "rating" must be a number between 1 and 5');
+    const r = Number(data.rating);
+    if (Number.isNaN(r) || r < 1 || r > 5) {
+      const error = new Error('Field "rating" must be between 1 and 5');
       error.statusCode = 400;
       throw error;
     }
+    update.rating = r;
   }
 
-  const updatedReview = ReviewModel.updateReview(id, data);
+  if (data.authorName !== undefined) {
+    update.authorName = data.authorName || '';
+  }
 
-  if (!updatedReview) {
+  if (data.comment !== undefined) {
+    update.comment = data.comment || '';
+  }
+
+  const updated = await Review.findByIdAndUpdate(
+    id,
+    { $set: update },
+    { new: true, runValidators: true }
+  ).exec();
+
+  if (!updated) {
     const error = new Error('Review not found');
     error.statusCode = 404;
     throw error;
   }
 
-  return updatedReview;
+  return mapReview(updated);
 }
 
 // Eliminar reseña
 async function deleteReview(id) {
-  const deleted = ReviewModel.deleteReview(id);
+  const deleted = await Review.findByIdAndDelete(id).exec();
 
   if (!deleted) {
     const error = new Error('Review not found');
@@ -154,26 +144,28 @@ async function deleteReview(id) {
   return true;
 }
 
+// Resumen de reputación de un proveedor
 async function getProviderRatingSummary(providerId) {
-  const reviews = await getAllReviews({ providerId });
+  const reviews = await Review.find({ providerId }).select('rating').exec();
 
   if (!reviews || reviews.length === 0) {
     return {
-      averageRating: null,
+      providerId,
+      averageRating: 0,
       totalReviews: 0
     };
   }
 
   const totalReviews = reviews.length;
-  const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+  const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
   const averageRating = sum / totalReviews;
 
   return {
+    providerId,
     averageRating,
     totalReviews
   };
 }
-
 
 module.exports = {
   getAllReviews,
@@ -181,6 +173,5 @@ module.exports = {
   createReview,
   updateReview,
   deleteReview,
-  getProviderRatingSummary // <-- agregar
+  getProviderRatingSummary
 };
-
