@@ -3,16 +3,33 @@
 const ServiceModel = require('../models/service.model');
 const ProviderModel = require('../models/provider.model');
 
-// Listar servicios (opcionalmente filtrados por providerId)
 async function getAllServices(filter = {}) {
-  const { providerId } = filter;
+  const { providerId, category, zone } = filter;
+
+  let services;
 
   if (providerId) {
-    return ServiceModel.getServicesByProviderId(providerId);
+    services = ServiceModel.getServicesByProviderId(providerId);
+  } else {
+    services = ServiceModel.getAllServices();
   }
 
-  return ServiceModel.getAllServices();
+  if (category) {
+    services = services.filter((s) => s.category === category);
+  }
+
+  if (zone) {
+    const providers = ProviderModel.getAllProviders();
+    const providerIdsInZone = providers
+      .filter((p) => p.zone === zone)
+      .map((p) => p.id);
+
+    services = services.filter((s) => providerIdsInZone.includes(s.providerId));
+  }
+
+  return services;
 }
+
 
 // Obtener un servicio por ID
 async function getServiceById(id) {

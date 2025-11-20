@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Explorar servicios</title>
+</head>
+
+<body>
+    <h1>Explorar servicios</h1>
+
+    <form method="GET" action="/servicios">
+        <p>
+            <label for="category">Categoría:</label><br />
+            <select id="category" name="category">
+                <option value="">Todas</option>
+                <% categories.forEach(function (cat) { %>
+                    <option value="<%= cat %>" <%=selectedCategory===cat ? 'selected' : '' %>>
+                        <%= cat %>
+                    </option>
+                    <% }); %>
+            </select>
+        </p>
+
+        <p>
+            <label for="zone">Zona:</label><br />
+            <select id="zone" name="zone">
+                <option value="">Todas</option>
+                <% zones.forEach(function (z) { %>
+                    <option value="<%= z %>" <%=selectedZone===z ? 'selected' : '' %>>
+                        <%= z %>
+                    </option>
+                    <% }); %>
+            </select>
+        </p>
+
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <hr />
+
+    <% if (services && services.length> 0) { %>
+        <ul>
+            <% services.forEach(function (service) { %>
+                <li>
+                    <strong>
+                        <%= service.title %>
+                    </strong><br />
+
+                    <% if (service.description) { %>
+                        <span>
+                            <%= service.description %>
+                        </span><br />
+                        <% } %>
+
+                            <% if (service.category) { %>
+                                <span>Categoría: <%= service.category %></span><br />
+                                <% } %>
+
+                                    <% if (service.priceAmount !==null) { %>
+                                        <span>Precio: <%= service.priceAmount %>
+                                                <%= service.priceCurrency || '' %></span><br />
+                                        <% } %>
+
+                                            <% if (service.exchangeHours !==null) { %>
+                                                <span>Intercambio: <%= service.exchangeHours %>
+                                                        <%= service.exchangeUnit || 'horas' %></span><br />
+                                                <% } %>
+
+                                                    <% if (service.provider) { %>
+                                                        <span>
+                                                            Proveedor:
+                                                            <a href="/proveedores/<%= service.provider.id %>">
+                                                                <%= service.provider.name %>
+                                                            </a>
+                                                        </span><br />
+
+                                                        <% if (service.provider.zone) { %>
+                                                            <span>Zona: <%= service.provider.zone %></span><br />
+                                                            <% } %>
+
+                                                                <% if (service.provider.whatsapp) { %>
+                                                                    <a href="https://wa.me/<%= service.provider.whatsapp.replace(/[^0-9]/g, '') %>"
+                                                                        target="_blank">
+                                                                        Contactar por WhatsApp
+                                                                    </a><br />
+                                                                    <% } %>
+
+                                                                        <% if (service.provider.email) { %>
+                                                                            <a
+                                                                                href="mailto:<%= service.provider.email %>">
+                                                                                Contactar por correo
+                                                                            </a><br />
+                                                                            <% } %>
+                                                                                <% } %>
+                </li>
+                <hr />
+                <% }); %>
+        </ul>
+        <% } else { %>
+            <p>No se encontraron servicios con los filtros seleccionados.</p>
+            <% } %>
+
+                <p>
+                    <a href="/proveedores">Ver listado de proveedores</a>
+                </p>
+</body>
+
+</html>
