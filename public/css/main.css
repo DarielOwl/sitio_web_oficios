@@ -51,6 +51,29 @@ body {
   color: #ffffff;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-link {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link-active {
+  color: #ffffff;
+  border-bottom-color: #3b82f6;
+}
+
 .main-content {
   flex: 1;
   padding: 24px 16px 40px;

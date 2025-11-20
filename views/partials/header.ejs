@@ -10,21 +10,46 @@
     <header class="site-header">
       <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
         <div>
-          <a href="/" class="brand" style="color:#f9fafb;text-decoration:none;">Oficios Locales</a>
+          <a href="/" class="brand" style="color:#f9fafb;text-decoration:none;">
+            Oficios Locales
+          </a>
           <% if (currentUser) { %>
             <div class="text-xs">
-              <%= currentUser.email %> (<%= currentUser.role === 'provider' ? 'Proveedor' : 'Cliente' %>)
+              <%= currentUser.email %>
+              (<%= currentUser.role === 'provider' ? 'Proveedor' : 'Cliente' %>)
             </div>
           <% } %>
         </div>
-        <nav>
-          <a href="/servicios">Servicios</a>
-          <a href="/proveedores">Proveedores</a>
+
+        <nav class="nav-links">
+          <a
+            href="/servicios"
+            class="nav-link <%= currentPath && currentPath.startsWith('/servicios') ? 'nav-link-active' : '' %>"
+          >
+            Servicios
+          </a>
+
+          <a
+            href="/proveedores"
+            class="nav-link <%= currentPath && currentPath.startsWith('/proveedores') ? 'nav-link-active' : '' %>"
+          >
+            Proveedores
+          </a>
+
           <% if (!currentUser) { %>
-            <a href="/auth/login">Ingresar</a>
+            <a
+              href="/auth/login"
+              class="nav-link <%= currentPath && currentPath.startsWith('/auth') ? 'nav-link-active' : '' %>"
+            >
+              Ingresar
+            </a>
           <% } else { %>
             <form action="/auth/logout" method="POST" style="display:inline;">
-              <button type="submit" class="btn btn-ghost" style="padding:4px 10px;font-size:0.8rem;">
+              <button
+                type="submit"
+                class="btn btn-ghost"
+                style="padding:4px 10px;font-size:0.8rem;"
+              >
                 Salir
               </button>
             </form>
