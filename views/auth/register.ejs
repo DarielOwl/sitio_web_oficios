@@ -1,48 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
+<%- include('../partials/header', { title: 'Registro de proveedor' }) %>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Registro de proveedor</title>
-</head>
+<h1 class="page-title">Registro de proveedor</h1>
+<p class="page-subtitle">
+  Creá tu perfil de oficio para publicar servicios y recibir reseñas.
+</p>
 
-<body>
-  <h1>Registro de proveedor</h1>
-
+<div class="card form-card">
   <% if (errorMessage) { %>
-    <p style="color: red;"><strong>
-        <%= errorMessage %>
-      </strong></p>
-    <% } %>
+    <div class="alert-error">
+      <%= errorMessage %>
+    </div>
+  <% } %>
 
-      <form action="/auth/register" method="POST">
-        <p>
-          <label for="name">Nombre:</label><br />
-          <input type="text" id="name" name="name" />
-        </p>
+  <form action="/auth/register" method="POST">
+    <div class="form-group">
+      <label for="name" class="form-label">Nombre</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="form-input"
+        placeholder="Tu nombre o nombre del emprendimiento"
+      />
+    </div>
 
-        <p>
-          <label for="email">Correo electrónico:</label><br />
-          <input type="email" id="email" name="email" required />
-        </p>
+    <div class="form-group">
+      <label for="email" class="form-label">Correo electrónico</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="form-input"
+        required
+      />
+    </div>
 
-        <p>
-          <label for="password">Contraseña:</label><br />
-          <input type="password" id="password" name="password" minlength="6" required />
-        </p>
+    <div class="form-group">
+      <label for="password" class="form-label">Contraseña</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="form-input"
+        minlength="6"
+        required
+      />
+      <p class="form-help">Mínimo 6 caracteres.</p>
+    </div>
 
-        <button type="submit">Registrarse como proveedor</button>
-      </form>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        Registrarse como proveedor
+      </button>
+    </div>
+  </form>
+</div>
 
-      <p>
-        ¿Querés registrarte como cliente?
-        <a href="/auth/register-client">Registro de cliente</a>
-      </p>
+<p class="text-sm">
+  ¿Querés registrarte como cliente?
+  <a href="/auth/register-client" class="link-muted">Registro de cliente</a>
+</p>
 
-      <p>
-        ¿Ya tenés cuenta?
-        <a href="/auth/login">Iniciar sesión</a>
-      </p>
-</body>
+<p class="text-sm">
+  ¿Ya tenés cuenta?
+  <a href="/auth/login" class="link-muted">Iniciar sesión</a>
+</p>
 
-</html>
+<%- include('../partials/footer') %>
